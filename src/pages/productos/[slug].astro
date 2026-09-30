@@ -1,0 +1,256 @@
+---
+/**
+ * Ficha de producto dinámica.
+ * SPEC §5: información técnica completa + CTA.
+ */
+import BrickIllustration from '../../components/BrickIllustration.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { products } from '../../data/products';
+import { company } from '../../data/company';
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+
+const waText = encodeURIComponent(
+  `Hola, me interesa el producto ${product.name}. Quiero recibir información técnica y presupuesto.`
+);
+const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
+
+const hasData = (v: unknown) => v !== null && v !== undefined && v !== '';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Productos', url: '/productos' },
+  { name: product.name, url: `/productos/${product.slug}` },
+];
+
+const productJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.description,
+  brand: { '@type': 'Brand', name: company.name },
+  manufacturer: { '@type': 'Organization', name: company.legalName },
+  category: product.application.join(', '),
+};
+---
+
+<BaseLayout
+  title={`${product.name} | ${company.name}`}
+  description={product.description}
+  path={`/productos/${product.slug}`}
+  type="article"
+  breadcrumbs={breadcrumbs}
+  productJsonLd={productJsonLd}
+>
+  <section class="product-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Navegación">
+        {breadcrumbs.map((b, i) => (
+          <span>
+            <a href={b.url}>{b.name}</a>
+            {i < breadcrumbs.length - 1 && <span class="breadcrumb-sep">›</span>}
+          </span>
+        ))}
+      </nav>
+
+      <div class="product-grid">
+        <div class="product-visual">
+          <BrickIllustration product={product} size="detail" />
+          <p class="visual-note">Ilustración técnica — imagen real pendiente de sesión fotográfica.</p>
+        </div>
+
+        <div class="product-info">
+          {product.pending && (
+            <span class="pending">Datos técnicos pendientes de validación</span>
+          )}
+          <h1>{product.name}</h1>
+          <p class="lead">{product.description}</p>
+
+          <dl class="specs-table">
+            <div>
+              <dt>Medidas</dt>
+              <dd>{hasData(product.dimensions) ? product.dimensions : 'A confirmar'}</dd>
+            </div>
+            <div>
+              <dt>Peso unitario</dt>
+              <dd>{hasData(product.weightKg) ? `${product.weightKg} kg` : 'A confirmar'}</dd>
+            </div>
+            <div>
+              <dt>Unidades por m²</dt>
+              <dd>{hasData(product.unitsPerM2) ? product.unitsPerM2 : 'A confirmar'}</dd>
+            </div>
+            <div>
+              <dt>Unidades por pallet</dt>
+              <dd>{hasData(product.palletUnits) ? product.palletUnits : 'A confirmar'}</dd>
+            </div>
+            <div>
+              <dt>Peso por pallet</dt>
+              <dd>{hasData(product.palletWeightKg) ? `${product.palletWeightKg} kg` : 'A confirmar'}</dd>
+            </div>
+            <div>
+              <dt>Resistencia</dt>
+              <dd>{hasData(product.resistance) ? product.resistance : 'Pendiente de ensayo'}</dd>
+            </div>
+            <div>
+              <dt>Aplicación</dt>
+              <dd>{product.application.join(', ')}</dd>
+            </div>
+          </dl>
+
+          <div class="product-actions">
+            <a href={waHref} target="_blank" rel="noopener" class="btn btn-whatsapp">
+              Consultar por WhatsApp
+            </a>
+            <a href="/contacto" class="btn btn-primary">Solicitar cotización</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container product-detail-grid">
+      <article>
+        <h2>Descripción</h2>
+        <p>{product.description}</p>
+
+        <h3>Uso recomendado</h3>
+        <p>{product.recommendedUse}</p>
+
+        <h3>Colocación</h3>
+        <p>
+          Recomendamos seguir las indicaciones de la ficha técnica y las normas
+          vigentes para mampostería cerámica. Próximamente publicaremos manuales
+          de colocación detallados.
+        </p>
+      </article>
+
+      <aside class="product-aside">
+        <div class="card">
+          <h3>¿Necesitás asesoramiento?</h3>
+          <p>
+            Nuestro equipo comercial te ayuda a calcular cantidades, rendimiento y
+            logística para tu obra.
+          </p>
+          <a href="/contacto" class="btn btn-primary">Contactar al equipo</a>
+        </div>
+
+        <div class="card">
+          <h3>Recursos relacionados</h3>
+          <ul class="aside-links">
+            <li><a href="/recursos-tecnicos">Centro técnico</a></li>
+            <li><a href="/aplicaciones">Aplicaciones</a></li>
+            <li><a href="/distribuidores">Distribuidores</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .product-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-7);
+  }
+  .breadcrumb {
+    font-size: var(--fs-100);
+    color: var(--color-grafito-500);
+    margin-bottom: var(--space-5);
+  }
+  .breadcrumb a { color: var(--color-grafito-500); }
+  .breadcrumb a:hover { color: var(--color-terracota-600); }
+  .breadcrumb-sep { margin: 0 0.5rem; color: var(--color-grafito-300); }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: var(--space-7);
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .product-grid { grid-template-columns: 1fr; }
+  }
+
+  .product-visual {
+    background: var(--color-arena);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+  }
+  .visual-note {
+    font-size: var(--fs-50);
+    color: var(--color-grafito-500);
+    margin: var(--space-3) 0 0;
+  }
+
+  .product-info h1 { margin-bottom: var(--space-3); }
+  .product-info .lead {
+    font-size: var(--fs-300);
+    color: var(--color-grafito-500);
+    margin-bottom: var(--space-5);
+  }
+
+  .specs-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2) var(--space-5);
+    margin: var(--space-5) 0;
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-grafito-100);
+    border-bottom: 1px solid var(--color-grafito-100);
+  }
+  @media (max-width: 480px) { .specs-table { grid-template-columns: 1fr; } }
+  .specs-table > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: var(--fs-100);
+  }
+  .specs-table dt {
+    color: var(--color-grafito-500);
+    font-weight: 500;
+  }
+  .specs-table dd {
+    margin: 0;
+    color: var(--color-grafito-900);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .product-detail-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-7);
+  }
+  @media (max-width: 800px) {
+    .product-detail-grid { grid-template-columns: 1fr; }
+  }
+  .product-detail-grid h2 { margin-top: 0; }
+  .product-detail-grid h3 {
+    margin-top: var(--space-5);
+    font-size: var(--fs-400);
+  }
+
+  .product-aside {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .aside-links { list-style: none; padding: 0; margin: 0; }
+  .aside-links li { padding: var(--space-2) 0; border-bottom: 1px solid var(--color-grafito-100); }
+  .aside-links li:last-child { border-bottom: 0; }
+</style>

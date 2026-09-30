@@ -1,0 +1,104 @@
+---
+/**
+ * ProductCard.astro — tarjeta de producto para grid.
+ * SPEC §15: imagen + título + resumen + medidas + rendimiento + CTA.
+ */
+import type { Product } from '../data/products';
+import BrickIllustration from './BrickIllustration.astro';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const hasPendingData =
+  product.weightKg === null ||
+  product.unitsPerM2 === null ||
+  product.palletUnits === null;
+---
+
+<article class="card product-card">
+  {product.pending && (
+    <span class="pending" title="Datos técnicos pendientes de validación">Pendiente de validación</span>
+  )}
+
+  <div class="product-image">
+    <BrickIllustration product={product} size="card" />
+  </div>
+
+  <h3>{product.name}</h3>
+  <p class="product-desc">{product.description}</p>
+
+  <dl class="product-specs">
+    {product.dimensions && (
+      <div>
+        <dt>Medida</dt>
+        <dd>{product.dimensions}</dd>
+      </div>
+    )}
+    <div>
+      <dt>Rendimiento</dt>
+      <dd>{hasPendingData ? 'A confirmar' : `${product.unitsPerM2} un/m²`}</dd>
+    </div>
+    <div>
+      <dt>Aplicación</dt>
+      <dd>{product.application.join(', ')}</dd>
+    </div>
+  </dl>
+
+  <a href={`/productos/${product.slug}`} class="btn btn-secondary product-cta">
+    Ver ficha técnica
+  </a>
+</article>
+
+<style>
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .product-card h3 { margin: 0; }
+  .product-desc {
+    color: var(--color-grafito-500);
+    font-size: var(--fs-100);
+    flex-grow: 1;
+  }
+  .product-image {
+    background: var(--color-arena);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 200/140;
+    display: grid;
+    place-items: center;
+    margin-bottom: var(--space-2);
+  }
+  .product-specs {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-3) 0;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--color-grafito-100);
+    border-bottom: 1px solid var(--color-grafito-100);
+    font-size: var(--fs-100);
+  }
+  .product-specs > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .product-specs dt {
+    color: var(--color-grafito-500);
+    font-weight: 500;
+  }
+  .product-specs dd {
+    margin: 0;
+    color: var(--color-grafito-900);
+    font-weight: 600;
+    text-align: right;
+  }
+  .product-cta {
+    width: 100%;
+    margin-top: auto;
+  }
+</style>

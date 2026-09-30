@@ -1,0 +1,154 @@
+---
+/**
+ * Footer.astro — pie de página con datos de contacto y enlaces secundarios.
+ */
+import { company } from '../data/company';
+
+const year = new Date().getFullYear();
+
+const navCols = [
+  {
+    title: 'Empresa',
+    links: [
+      { href: '/empresa', label: 'Sobre nosotros' },
+      { href: '/empresa#proceso', label: 'Proceso productivo' },
+      { href: '/empresa#cobertura', label: 'Cobertura' },
+    ],
+  },
+  {
+    title: 'Productos',
+    links: [
+      { href: '/productos', label: 'Catálogo' },
+      { href: '/aplicaciones', label: 'Aplicaciones' },
+      { href: '/productos?type=cerramiento', label: 'Cerramiento' },
+      { href: '/productos?type=portante', label: 'Portantes' },
+    ],
+  },
+  {
+    title: 'Soporte',
+    links: [
+      { href: '/recursos-tecnicos', label: 'Recursos técnicos' },
+      { href: '/preguntas-frecuentes', label: 'Preguntas frecuentes' },
+      { href: '/distribuidores', label: 'Distribuidores' },
+      { href: '/contacto', label: 'Contacto' },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <p class="footer-title">
+          <strong>Cerámica</strong> <em>Puerto Rico</em>
+        </p>
+        <p class="footer-tagline">{company.tagline}</p>
+        <address>
+          <p>{company.address.street}</p>
+          <p>{company.address.locality}, {company.address.province} — {company.address.country}</p>
+          <p>
+            <a href={`tel:${company.phone.tel}`}>{company.phone.display}</a>
+          </p>
+        </address>
+      </div>
+
+      {navCols.map((col) => (
+        <nav class="footer-col" aria-label={col.title}>
+          <h4>{col.title}</h4>
+          <ul>
+            {col.links.map((l) => (
+              <li><a href={l.href}>{l.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+
+      <div class="footer-col">
+        <h4>Canales</h4>
+        <ul>
+          <li>
+            <a
+              href={`https://wa.me/${company.branches[0].whatsapp}`}
+              target="_blank"
+              rel="noopener"
+            >
+              WhatsApp
+            </a>
+          </li>
+          <li><a href={company.social.instagram} target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href={company.social.facebook} target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {company.legalName}. Todos los derechos reservados.</p>
+      <p>
+        Hecho en Misiones para construir nuestra región.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-grafito-900);
+    color: var(--color-grafito-100);
+    padding-block: var(--space-8) var(--space-5);
+    margin-top: var(--space-9);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: var(--space-7);
+  }
+  @media (max-width: 800px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+  .footer-title {
+    margin: 0 0 var(--space-3);
+    color: var(--color-blanco);
+    font-size: var(--fs-400);
+  }
+  .footer-title strong { font-weight: 700; }
+  .footer-title em { font-style: normal; color: var(--color-terracota-300); margin-left: 0.25rem; }
+  .footer-tagline {
+    color: var(--color-grafito-300);
+    margin-bottom: var(--space-4);
+  }
+  address { font-style: normal; color: var(--color-grafito-100); }
+  address a { color: var(--color-blanco); }
+  address a:hover { color: var(--color-terracota-300); }
+
+  .footer-col h4 {
+    color: var(--color-blanco);
+    font-size: var(--fs-100);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-4);
+  }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; }
+  .footer-col li { margin-bottom: var(--space-2); }
+  .footer-col a {
+    color: var(--color-grafito-100);
+    font-size: var(--fs-100);
+  }
+  .footer-col a:hover { color: var(--color-terracota-300); }
+
+  .footer-bottom {
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-grafito-700);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    color: var(--color-grafito-300);
+    font-size: var(--fs-50);
+  }
+  .footer-bottom p { margin: 0; }
+</style>

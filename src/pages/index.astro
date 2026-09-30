@@ -1,0 +1,553 @@
+---
+/**
+ * Home — sigue SPEC §22 wireframe.
+ * Secciones: hero, selector, productos, beneficios, industria,
+ * historia, cobertura, obras, recursos, distribuidores, conversión.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProductCard from '../components/ProductCard.astro';
+import ApplicationCard from '../components/ApplicationCard.astro';
+import { company } from '../data/company';
+import { getFeaturedProducts } from '../data/products';
+
+const featured = getFeaturedProducts();
+
+const selectorCards = [
+  {
+    title: 'Cerramientos',
+    description: 'Paredes exteriores de viviendas y obras.',
+    href: '/aplicaciones/cerramientos',
+    icon: 'wall' as const,
+  },
+  {
+    title: 'Muros portantes',
+    description: 'Para muros que soportan cargas.',
+    href: '/aplicaciones/muros-portantes',
+    icon: 'building' as const,
+  },
+  {
+    title: 'Viviendas',
+    description: 'Soluciones para obra residencial.',
+    href: '/aplicaciones/viviendas',
+    icon: 'home' as const,
+  },
+  {
+    title: 'Encadenados',
+    description: 'Encadenados horizontales y verticales.',
+    href: '/aplicaciones/encadenados',
+    icon: 'chain' as const,
+  },
+];
+
+const benefits = [
+  { title: 'Aislación térmica', desc: 'Cerramientos cerámicos con buen desempeño térmico.' },
+  { title: 'Durabilidad', desc: 'Producto cocido que mantiene sus propiedades en el tiempo.' },
+  { title: 'Resistencia', desc: 'Resistencia mecánica adecuada para cada aplicación.' },
+  { title: 'Velocidad de obra', desc: 'Mampostería simple, dimensiones uniformes, avance rápido.' },
+  { title: 'Disponibilidad regional', desc: 'Producción en Misiones para todo el NEA.' },
+];
+
+const industries = [
+  'Recepción de materia prima',
+  'Preparación y extrusión',
+  'Secado y corte',
+  'Hornos de cocción',
+  'Control de calidad',
+  'Pallets y despacho',
+];
+
+const resources = [
+  { title: 'Fichas técnicas', href: '/recursos-tecnicos#fichas-tecnicas', desc: 'Medidas, rendimiento, ensayos.' },
+  { title: 'Catálogo', href: '/recursos-tecnicos#catalogos', desc: 'Línea completa de productos.' },
+  { title: 'Manuales', href: '/recursos-tecnicos#manuales', desc: 'Recomendaciones de colocación.' },
+  { title: 'Calculadora', href: '/recursos-tecnicos#calculadora', desc: 'Estimá cuántos ladrillos necesitás.', pending: true },
+];
+
+const breadcrumbs = [{ name: 'Inicio', url: '/' }];
+---
+
+<BaseLayout
+  title={`${company.name} | Ladrillos Cerámicos en Misiones`}
+  description="Fábrica de ladrillos cerámicos huecos en Puerto Rico, Misiones. Conocé nuestros productos, información técnica, distribuidores y solicitá tu presupuesto."
+  path="/"
+  breadcrumbs={breadcrumbs}
+>
+  <Hero />
+
+  <!-- Selector -->
+  <section class="section section--tight">
+    <div class="container">
+      <span class="section-eyebrow">Aplicaciones</span>
+      <h2>¿Qué necesitás construir?</h2>
+      <p class="section-intro">
+        Empezá por el problema constructivo y elegí después el ladrillo adecuado.
+      </p>
+      <div class="grid grid-4">
+        {selectorCards.map((c) => (
+          <ApplicationCard
+            title={c.title}
+            description={c.description}
+            href={c.href}
+            icon={c.icon}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Productos -->
+  <section class="section">
+    <div class="container">
+      <span class="section-eyebrow">Productos</span>
+      <h2>Elegí el ladrillo adecuado para tu obra</h2>
+      <p class="section-intro">
+        Línea principal de ladrillos cerámicos huecos para cerramientos y muros portantes.
+      </p>
+      <div class="grid grid-3">
+        {featured.map((p) => <ProductCard product={p} />)}
+      </div>
+      <div class="section-cta">
+        <a href="/productos" class="btn btn-primary">Ver todo el catálogo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Beneficios -->
+  <section class="section section--dark">
+    <div class="container">
+      <span class="section-eyebrow" style="color: var(--color-terracota-300);">Beneficios</span>
+      <h2>Cerámica que trabaja durante toda la vida de la obra</h2>
+      <ul class="benefits-list">
+        {benefits.map((b) => (
+          <li>
+            <h3>{b.title}</h3>
+            <p>{b.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Industria -->
+  <section class="section">
+    <div class="container industry-grid">
+      <div>
+        <span class="section-eyebrow">Industria</span>
+        <h2>Industria misionera desde Puerto Rico</h2>
+        <p>
+          Producimos ladrillos cerámicos en nuestra planta de Puerto Rico, Misiones,
+          con un proceso controlado desde la materia prima hasta el despacho.
+        </p>
+        <ul class="process-list">
+          {industries.map((step, i) => (
+            <li>
+              <span class="step-num">{String(i + 1).padStart(2, '0')}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ul>
+        <a href="/empresa" class="btn btn-secondary">Conocer nuestra fábrica</a>
+      </div>
+
+      <div class="industry-visual" aria-hidden="true">
+        <svg viewBox="0 0 400 300" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="ind-bg" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#f4ddcb"/>
+              <stop offset="100%" stop-color="#9c4d2c"/>
+            </linearGradient>
+            <linearGradient id="ind-brick" x1="0" x2="1">
+              <stop offset="0%" stop-color="#d9986c"/>
+              <stop offset="100%" stop-color="#7c3b21"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="300" fill="url(#ind-bg)"/>
+          <!-- Cielo -->
+          <rect x="0" y="0" width="400" height="120" fill="#fbf2ec" opacity="0.6"/>
+          <!-- Suelo -->
+          <rect x="0" y="220" width="400" height="80" fill="#27272a" opacity="0.85"/>
+          <line x1="0" y1="220" x2="400" y2="220" stroke="#faf7f2" stroke-width="2"/>
+          <!-- Planta (silueta) -->
+          <rect x="60" y="120" width="280" height="100" fill="#27272a"/>
+          <rect x="60" y="120" width="280" height="14" fill="url(#ind-brick)"/>
+          <!-- Hornos -->
+          <rect x="80" y="100" width="22" height="20" fill="#27272a"/>
+          <rect x="115" y="100" width="22" height="20" fill="#27272a"/>
+          <rect x="150" y="100" width="22" height="20" fill="#27272a"/>
+          <circle cx="91" cy="100" r="6" fill="#d9986c" opacity="0.9"/>
+          <circle cx="126" cy="100" r="6" fill="#d9986c" opacity="0.7"/>
+          <!-- Chimenea -->
+          <rect x="190" y="60" width="14" height="60" fill="#27272a"/>
+          <ellipse cx="197" cy="55" rx="20" ry="10" fill="#faf7f2" opacity="0.7"/>
+          <ellipse cx="200" cy="40" rx="14" ry="6" fill="#faf7f2" opacity="0.5"/>
+          <!-- Pallets -->
+          <rect x="40" y="240" width="40" height="20" fill="url(#ind-brick)"/>
+          <rect x="42" y="242" width="36" height="6" fill="#7c3b21"/>
+          <rect x="320" y="244" width="40" height="20" fill="url(#ind-brick)"/>
+          <rect x="322" y="246" width="36" height="6" fill="#7c3b21"/>
+          <!-- Camión -->
+          <rect x="280" y="200" width="60" height="22" fill="#0f0f12"/>
+          <rect x="335" y="195" width="14" height="14" fill="#27272a"/>
+          <rect x="338" y="198" width="8" height="8" fill="#d9986c"/>
+          <circle cx="295" cy="225" r="5" fill="#27272a"/>
+          <circle cx="320" cy="225" r="5" fill="#27272a"/>
+          <circle cx="340" cy="225" r="5" fill="#27272a"/>
+          <!-- Texto FABRICA -->
+          <text x="200" y="180" text-anchor="middle" fill="#faf7f2" font-family="Manrope, sans-serif" font-weight="700" font-size="14" letter-spacing="3">FÁBRICA</text>
+        </svg>
+        <p class="visual-note">Imagen real de planta — pendiente sesión fotográfica.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Historia -->
+  <section class="section section--tight">
+    <div class="container history-block">
+      <div class="history-text">
+        <span class="section-eyebrow">Historia</span>
+        <h2>Más de 50 años construyendo junto al NEA</h2>
+        <p>
+          Cerámica Puerto Rico comunica su actividad desde 1975. La cronología completa
+          de la empresa está siendo validada con el cliente para construir una línea
+          temporal precisa.
+        </p>
+        <a href="/empresa" class="btn btn-secondary">Conocé nuestra historia</a>
+      </div>
+      <ol class="history-timeline" aria-label="Hitos confirmados">
+        <li>
+          <span class="history-year">1975</span>
+          <span class="history-event">Inicio de la actividad industrial</span>
+        </li>
+        <li>
+          <span class="history-year">2023</span>
+          <span class="history-event">Apertura del corralón en Puerto Iguazú</span>
+        </li>
+        <li>
+          <span class="history-year">Hoy</span>
+          <span class="history-event">Producción para todo el NEA</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Cobertura -->
+  <section class="section">
+    <div class="container">
+      <span class="section-eyebrow">Cobertura</span>
+      <h2>De nuestra fábrica a toda la región</h2>
+      <p class="section-intro">
+        Atendemos Misiones y provincias vecinas. Consultanos por tu localidad y volumen.
+      </p>
+      <div class="coverage-grid">
+        {['Misiones', 'Corrientes', 'Chaco', 'Formosa'].map((p) => (
+          <div class="card coverage-card">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none"
+                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <h3>{p}</h3>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Obras (placeholder) -->
+  <section class="section section--tight">
+    <div class="container">
+      <span class="section-eyebrow">Obras</span>
+      <h2>De nuestra fábrica a obras de toda la región</h2>
+      <p class="section-intro">
+        Próximamente publicaremos una selección de obras de referencia realizadas con
+        nuestros ladrillos.
+      </p>
+      <div class="grid grid-3">
+        {[1, 2, 3].map((n) => (
+          <div class="card obra-card">
+            <div class="obra-image" aria-hidden="true">
+              <svg viewBox="0 0 240 180" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id={`obra-${n}`} x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#f4ddcb"/>
+                    <stop offset="100%" stop-color="#9c4d2c"/>
+                  </linearGradient>
+                </defs>
+                <rect width="240" height="180" fill={`url(#obra-${n})`}/>
+                <g fill="#27272a" opacity="0.85">
+                  <rect x="30" y="80" width="180" height="80"/>
+                  <rect x="60" y="40" width="50" height="50"/>
+                  <rect x="130" y="40" width="50" height="50"/>
+                  <rect x="190" y="60" width="30" height="20"/>
+                  <rect x="80" y="100" width="20" height="30" fill="#faf7f2" opacity="0.7"/>
+                  <rect x="145" y="100" width="20" height="30" fill="#faf7f2" opacity="0.7"/>
+                </g>
+                <rect x="0" y="155" width="240" height="25" fill="#0f0f12" opacity="0.4"/>
+              </svg>
+            </div>
+            <p class="pending" style="margin-top: var(--space-3);">Pendiente de carga</p>
+            <h3>Obra de referencia</h3>
+            <p class="obra-meta">Localidad · Producto · Año</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recursos -->
+  <section class="section">
+    <div class="container">
+      <span class="section-eyebrow">Recursos técnicos</span>
+      <h2>Información para construir mejor</h2>
+      <div class="grid grid-4">
+        {resources.map((r) => (
+          <a href={r.href} class="card resource-card">
+            {r.pending && <span class="pending">Próximamente</span>}
+            <h3>{r.title}</h3>
+            <p>{r.desc}</p>
+          </a>
+        ))}
+      </div>
+      <div class="section-cta">
+        <a href="/recursos-tecnicos" class="btn btn-secondary">Ir al centro técnico</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Distribuidores preview -->
+  <section class="section section--tight">
+    <div class="container">
+      <span class="section-eyebrow">Distribuidores</span>
+      <h2>Encontrá Cerámica Puerto Rico cerca tuyo</h2>
+      <p class="section-intro">
+        Comprá directamente en nuestra planta o consultá por nuestros puntos de venta
+        habilitados en la región.
+      </p>
+      <a href="/distribuidores" class="btn btn-primary">Ver distribuidores</a>
+    </div>
+  </section>
+
+  <!-- Conversión final -->
+  <section class="section section--dark conversion">
+    <div class="container">
+      <h2>¿Estás planificando una obra?</h2>
+      <p>
+        Contanos qué necesitás y nuestro equipo comercial te ayuda a elegir el
+        producto adecuado.
+      </p>
+      <div class="hero-actions" style="display: flex; justify-content: center; gap: 5rem; flex-wrap: wrap; padding: 1rem 0;">
+        <a href="/contacto" class="btn btn-primary" style="min-width: 220px; padding: 1rem 1.75rem; font-size: 1.125rem;">Pedir cotización</a>
+        <a
+          href={`https://wa.me/${company.branches[0].whatsapp}?text=${encodeURIComponent('Hola, quiero pedir una cotización para mi obra.')}`}
+          target="_blank"
+          rel="noopener"
+          class="btn btn-whatsapp"
+          style="min-width: 220px; padding: 1rem 1.75rem; font-size: 1.125rem;"
+        >
+          Escribir por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-intro {
+    color: var(--color-grafito-500);
+    max-width: 60ch;
+    margin-bottom: var(--space-6);
+  }
+  .section-cta {
+    margin-top: var(--space-6);
+    text-align: center;
+  }
+
+  /* Benefits */
+  .benefits-list {
+    list-style: none;
+    margin: var(--space-6) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-5);
+  }
+  .benefits-list li {
+    background: var(--color-grafito-700);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    border-left: 3px solid var(--color-terracota-500);
+  }
+  .benefits-list h3 { color: var(--color-blanco); font-size: var(--fs-300); }
+  .benefits-list p { color: var(--color-grafito-100); margin: 0; }
+
+  /* Industry */
+  .industry-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-7);
+    align-items: start;
+  }
+  @media (max-width: 800px) { .industry-grid { grid-template-columns: 1fr; } }
+  .process-list {
+    list-style: none;
+    margin: var(--space-5) 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .process-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-grafito-100);
+  }
+  .step-num {
+    font-family: var(--font-mono);
+    color: var(--color-terracota-600);
+    font-weight: 700;
+    font-size: var(--fs-100);
+  }
+  .industry-visual {
+    aspect-ratio: 4/3;
+    background: var(--color-arena);
+    border-radius: var(--radius-lg);
+    display: grid;
+    place-items: end center;
+    padding: var(--space-3);
+    position: relative;
+    overflow: hidden;
+  }
+  .visual-block {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(184,98,59,0.25), transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(15,15,18,0.15), transparent 50%);
+  }
+  .visual-note {
+    position: relative;
+    color: var(--color-grafito-500);
+    font-size: var(--fs-50);
+    background: var(--color-blanco);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    margin: 0;
+  }
+
+  .visual-block {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(184,98,59,0.25), transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(15,15,18,0.15), transparent 50%);
+  }
+  .visual-note {
+    position: absolute;
+    bottom: var(--space-3);
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-grafito-500);
+    font-size: var(--fs-50);
+    background: var(--color-blanco);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* History */
+  .history-block {
+    background: var(--color-terracota-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-7);
+    align-items: center;
+  }
+  .history-text { max-width: 56ch; }
+  .history-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+    min-width: 260px;
+  }
+  .history-timeline li {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-blanco);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-terracota-500);
+  }
+  .history-year {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--color-terracota-600);
+    font-size: var(--fs-300);
+  }
+  .history-event {
+    color: var(--color-grafito-700);
+    font-size: var(--fs-100);
+  }
+  @media (max-width: 760px) {
+    .history-block { grid-template-columns: 1fr; }
+  }
+
+  /* Coverage */
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+  }
+  .coverage-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+  .coverage-card svg { color: var(--color-terracota-500); }
+  .coverage-card h3 { font-size: var(--fs-300); margin: 0; }
+
+  /* Obras placeholder */
+  .obra-card { display: flex; flex-direction: column; gap: var(--space-2); }
+  .obra-image {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--color-grafito-100), var(--color-arena));
+    border-radius: var(--radius-md);
+  }
+  .obra-card h3 { font-size: var(--fs-300); margin: var(--space-2) 0 0; }
+  .obra-meta { color: var(--color-grafito-500); font-size: var(--fs-100); margin: 0; }
+
+  /* Resources */
+  .resource-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .resource-card h3 { font-size: var(--fs-300); margin: var(--space-2) 0; }
+  .resource-card p { color: var(--color-grafito-500); margin: 0; font-size: var(--fs-100); }
+
+  /* Conversion */
+  .conversion { text-align: center; }
+  .conversion h2 { color: var(--color-blanco); }
+  .conversion p { color: var(--color-grafito-100); max-width: 60ch; margin: 0 auto var(--space-6); }
+  .conversion .hero-actions {
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .conversion .hero-actions .btn {
+    min-width: 220px;
+    padding: 1rem 1.75rem;
+    font-size: var(--fs-300);
+  }
+</style>

@@ -1,0 +1,90 @@
+---
+/**
+ * Aplicaciones — SPEC §16. Página índice con todas las aplicaciones.
+ * Cada una muestra productos relacionados.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { applications, productsByApplication } from '../../data/applications';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Aplicaciones', url: '/aplicaciones' },
+];
+
+const cards = applications.map((a) => ({
+  ...a,
+  productCount: productsByApplication(a.id).length,
+}));
+---
+
+<BaseLayout
+  title="Soluciones con Ladrillos Cerámicos para Construcción"
+  description="Aplicaciones constructivas con ladrillos cerámicos Cerámica Puerto Rico: cerramientos, muros portantes, tabiques interiores, encadenados, techos y más."
+  path="/aplicaciones"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Aplicaciones</span>
+      <h1>Soluciones cerámicas para cada obra</h1>
+      <p class="page-hero-sub">
+        Elegí primero qué necesitás construir y después el ladrillo adecuado.
+        Cada aplicación agrupa los productos recomendados para ese uso.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-3">
+        {cards.map((c) => (
+          <a href={`/aplicaciones/${c.id}`} class="card app-card">
+            {c.pending && <span class="pending">Pendiente de validación</span>}
+            <h2>{c.title}</h2>
+            <p>{c.description}</p>
+            <p class="product-count">{c.productCount} producto{c.productCount === 1 ? '' : 's'}</p>
+            <span class="card-cta">Ver productos →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .page-hero h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: var(--space-3);
+  }
+  .page-hero-sub {
+    color: var(--color-grafito-500);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .app-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    text-decoration: none;
+    color: inherit;
+  }
+  .app-card h2 {
+    font-size: var(--fs-500);
+    margin: var(--space-2) 0;
+  }
+  .product-count {
+    color: var(--color-grafito-500);
+    font-size: var(--fs-100);
+    margin: 0;
+  }
+  .card-cta {
+    margin-top: auto;
+    color: var(--color-terracota-600);
+    font-weight: 600;
+    font-size: var(--fs-100);
+  }
+</style>

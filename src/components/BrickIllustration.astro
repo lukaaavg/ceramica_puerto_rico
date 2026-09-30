@@ -1,0 +1,331 @@
+---
+/**
+ * BrickIllustration.astro
+ *
+ * Ilustración SVG isométrica del ladrillo, vista desde un extremo.
+ * El ladrillo está "acostado" de costado: la cara visible es el corte
+ * transversal (ancho × alto) con la grilla de huecos, y la profundidad
+ * hacia atrás es el largo del ladrillo (33cm).
+ *
+ * Patrón de huecos según referencias reales:
+ *   - Hueco 8  (8×18):  3 columnas × 2 filas = 6 huecos
+ *   - Hueco 12 (12×18): 2 columnas × 3 filas = 6 huecos
+ *   - Hueco 18 (18×18): 3 columnas × 3 filas = 9 huecos
+ *   - Encadenado:        1 hueco central rectangular grande
+ *
+ * Props:
+ *   - product: { type, dimensions, name }
+ *   - size: 'card' (200×140) | 'detail' (480×320)
+ */
+import type { Product } from '../data/products';
+
+interface Props {
+  product: Product;
+  size?: 'card' | 'detail';
+}
+
+const { product, size = 'card' } = Astro.props;
+
+function parseDims(d?: string): [number, number, number] | null {
+  if (!d) return null;
+  const m = d.match(/(\d+)\s*×\s*(\d+)\s*×\s*(\d+)/);
+  if (!m) return null;
+  return [parseInt(m[1]), parseInt(m[2]), parseInt(m[3])];
+}
+
+const dims = parseDims(product.dimensions);
+const id = `brick-${product.slug}`;
+
+const W = 480;
+const H = 320;
+const ANGLE = 0.5;  // perspectiva más pronunciada para que se note el 3D
+
+const realDims: [number, number, number] = dims ?? [12, 18, 33];
+const realMax = Math.max(...realDims);
+
+// Dimensiones en pantalla (proporcionales) — bien grandes
+const widthScreen  = (realDims[0] / realMax) * 360;   // ancho del ladrillo (cara visible)
+const heightScreen = (realDims[1] / realMax) * 460;   // alto del ladrillo
+const depthScreen  = (realDims[2] / realMax) * 520;   // largo hacia atrás
+
+const dx = depthScreen * ANGLE;
+
+// Centrar
+const fx = (W - widthScreen - dx) / 2;
+const fy = (H - heightScreen) / 2 + 10;
+
+// Vértices
+const frontTL = `${fx},${fy}`;
+const frontTR = `${fx + widthScreen},${fy}`;
+const frontBR = `${fx + widthScreen},${fy + heightScreen}`;
+const frontBL = `${fx},${fy + heightScreen}`;
+
+const topBackL = `${fx + dx},${fy - depthScreen}`;
+const topBackR = `${fx + widthScreen + dx},${fy - depthScreen}`;
+
+const sideBR = `${fx + widthScreen + dx},${fy + heightScreen - depthScreen}`;
+
+const frontFacePoints = [frontTL, frontTR, frontBR, frontBL].join(' ');
+const topFacePoints   = [frontTL, topBackL, topBackR, frontTR].join(' ');
+const sideFacePoints  = [frontTR, topBackR, sideBR, frontBR].join(' ');
+
+// — Layout de huecos en la cara transversal (lo que se ve al frente)
+interface GridHoles { cols: number; rows: number; }
+
+function getFrontLayout(): GridHoles {
+  if (product.type === 'encadenado') return { cols: 1, rows: 1 };
+
+  // Basado en las referencias:
+  // 8cm ancho × 18 alto  → 3 cols × 2 rows
+  // 12cm × 18           → 2 cols × 3 rows
+  // 18cm × 18           → 3 cols × 3 rows
+  const w = realDims[0];
+  const h = realDims[1];
+
+  if (w === 8) return { cols: 3, rows: 2 };
+  if (w === 12) return { cols: 2, rows: 3 };
+  if (w === 18) return { cols: 3, rows: 3 };
+
+  // Fallback genérico
+  const cols = w >= 16 ? 3 : 2;
+  const rows = h >= 17 ? 3 : 2;
+  return { cols, rows };
+}
+
+const layout = getFrontLayout();
+
+// Huecos frontales (cross-section)
+interface Rect { x: number; y: number; w: number; h: number; }
+
+function getFrontHoles(): Rect[] {
+  if (product.type === 'encadenado') {
+    return [{
+      x: fx + widthScreen * 0.22,
+      y: fy + heightScreen * 0.28,
+      w: widthScreen * 0.56,
+      h: heightScreen * 0.55,
+    }];
+  }
+
+  const margin = 6;
+  const innerW = widthScreen - margin * (layout.cols + 1);
+  const innerH = heightScreen - margin * (layout.rows + 1);
+  const holeW = innerW / layout.cols;
+  const holeH = innerH / layout.rows;
+
+  const holes: Rect[] = [];
+  for (let r = 0; r < layout.rows; r++) {
+    for (let c = 0; c < layout.cols; c++) {
+      holes.push({
+        x: fx + margin + c * (holeW + margin),
+        y: fy + margin + r * (holeH + margin),
+        w: holeW,
+        h: holeH,
+      });
+    }
+  }
+  return holes;
+}
+
+// Líneas de pared en la cara superior (entre los huecos)
+// Representan las paredes que separan los huecos a lo largo del ladrillo
+function getTopLines(): { x1: number; y1: number; x2: number; y2: number }[] {
+  if (product.type === 'encadenado') return [];
+
+  const margin = 6;
+  const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+
+  // Paredes verticales (separando columnas de huecos)
+  // Hay (cols - 1) paredes internas + 2 externas = cols + 1 líneas
+  const innerW = widthScreen - margin * (layout.cols + 1);
+  const holeW = innerW / layout.cols;
+
+  for (let c = 0; c <= layout.cols; c++) {
+    const lx = fx + margin + c * (holeW + margin) - (c === layout.cols ? 0 : margin / 2);
+    const t1 = 0;
+    const t2 = 1;
+    const x1 = lx + dx * t1;
+    const y1 = fy - depthScreen * t1;
+    const x2 = lx + dx * t2;
+    const y2 = fy - depthScreen * t2;
+    lines.push({ x1, y1, x2, y2 });
+  }
+
+  // Paredes horizontales (separando filas de huecos)
+  if (layout.rows > 1) {
+    const innerH = heightScreen - margin * (layout.rows + 1);
+    const holeH = innerH / layout.rows;
+    for (let r = 1; r < layout.rows; r++) {
+      const ly = fy + margin + r * (holeH + margin) - margin / 2;
+      lines.push({
+        x1: fx,
+        y1: ly,
+        x2: fx + widthScreen,
+        y2: ly,
+      });
+    }
+  }
+
+  return lines;
+}
+
+const frontHoles = getFrontHoles();
+const topLines = getTopLines();
+
+const cardW = size === 'card' ? 420 : 720;
+const cardH = size === 'card' ? 300 : 500;
+---
+
+<div class={`brick-wrap brick-wrap--${size}`}>
+  <svg
+    viewBox={`0 0 ${W} ${H}`}
+    width={cardW}
+    height={cardH}
+    preserveAspectRatio="xMidYMid meet"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label={`Ilustración de ${product.name}`}
+  >
+    <defs>
+      <linearGradient id={`${id}-front`} x1="0.2" x2="0.8" y1="0" y2="1">
+        <stop offset="0%" stop-color="#d18560"/>
+        <stop offset="55%" stop-color="#a85734"/>
+        <stop offset="100%" stop-color="#7c3b21"/>
+      </linearGradient>
+      <linearGradient id={`${id}-top`} x1="0" x2="0.6" y1="0" y2="1">
+        <stop offset="0%" stop-color="#e8b48a"/>
+        <stop offset="100%" stop-color="#b86c40"/>
+      </linearGradient>
+      <linearGradient id={`${id}-side`} x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#7c3b21"/>
+        <stop offset="100%" stop-color="#3a1a0a"/>
+      </linearGradient>
+      <radialGradient id={`${id}-hole`} cx="50%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#3a1a0a"/>
+        <stop offset="60%" stop-color="#1a0a05"/>
+        <stop offset="100%" stop-color="#0a0402"/>
+      </radialGradient>
+      <radialGradient id={`${id}-ground`} cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(15,15,18,0.35)"/>
+        <stop offset="100%" stop-color="rgba(15,15,18,0)"/>
+      </radialGradient>
+
+      <clipPath id={`${id}-clip-front`}><polygon points={frontFacePoints}/></clipPath>
+      <clipPath id={`${id}-clip-top`}><polygon points={topFacePoints}/></clipPath>
+      <clipPath id={`${id}-clip-side`}><polygon points={sideFacePoints}/></clipPath>
+    </defs>
+
+    {/* Sombra en el piso */}
+    <ellipse
+      cx={fx + widthScreen / 2 + dx / 2}
+      cy={fy + heightScreen + 12}
+      rx={widthScreen * 0.55 + depthScreen * 0.2}
+      ry="6"
+      fill={`url(#${id}-ground)`}
+    />
+
+    {/* Cara lateral (oscura) */}
+    <polygon points={sideFacePoints} fill={`url(#${id}-side)`}/>
+
+    {/* Cara superior */}
+    <polygon points={topFacePoints} fill={`url(#${id}-top)`}/>
+
+    {/* Líneas de pared en cara superior */}
+    <g clip-path={`url(#${id}-clip-top)`}>
+      {topLines.map((l, i) => (
+        <line
+          x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+          stroke="rgba(60,20,10,0.45)"
+          stroke-width="1.2"
+          key={i}
+        />
+      ))}
+    </g>
+
+    {/* Cara frontal */}
+    <polygon points={frontFacePoints} fill={`url(#${id}-front)`}/>
+
+    {/* Huecos en cara frontal */}
+    <g clip-path={`url(#${id}-clip-front)`}>
+      {frontHoles.map((h, i) => (
+        <g key={i}>
+          <rect
+            x={h.x} y={h.y} width={h.w} height={h.h}
+            fill={`url(#${id}-hole)`} rx="2"
+          />
+          {/* Highlight en borde superior (luz entrando) */}
+          <rect
+            x={h.x} y={h.y}
+            width={h.w} height="3"
+            fill="rgba(255,230,200,0.18)" rx="1"
+          />
+          {/* Sombra interior abajo */}
+          <rect
+            x={h.x} y={h.y + h.h - 4}
+            width={h.w} height="4"
+            fill="rgba(0,0,0,0.5)" rx="1"
+          />
+        </g>
+      ))}
+    </g>
+
+    {/* Bordes para definición de caras */}
+    <polyline
+      points={frontFacePoints}
+      fill="none"
+      stroke="rgba(15,15,18,0.35)"
+      stroke-width="1.2"
+    />
+    <polyline
+      points={topFacePoints}
+      fill="none"
+      stroke="rgba(15,15,18,0.2)"
+      stroke-width="0.8"
+    />
+    <polyline
+      points={sideFacePoints}
+      fill="none"
+      stroke="rgba(15,15,18,0.4)"
+      stroke-width="0.8"
+    />
+
+    {/* Highlight en arista superior-frontal */}
+    <line
+      x1={fx} y1={fy} x2={fx + widthScreen} y2={fy}
+      stroke="rgba(255,255,255,0.3)" stroke-width="1.2"
+    />
+
+    {/* Etiqueta de medidas (solo detail) */}
+    {size === 'detail' && product.dimensions && (
+      <g transform={`translate(${fx + widthScreen + 28}, ${fy + heightScreen / 2 - 14})`}>
+        <rect x="-6" y="-16" width="140" height="34" rx="6"
+              fill="#faf7f2" opacity="0.96" stroke="#e4e4e7" stroke-width="1"/>
+        <text font-family="ui-monospace, monospace" font-size="14" font-weight="700" fill="#27272a">
+          {product.dimensions}
+        </text>
+      </g>
+    )}
+  </svg>
+</div>
+
+<style>
+  .brick-wrap {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(ellipse at center bottom, var(--color-arena) 0%, transparent 60%),
+      linear-gradient(180deg, var(--color-blanco) 0%, var(--color-arena) 100%);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 720 / 500;
+    padding: var(--space-5);
+  }
+  .brick-wrap--card {
+    aspect-ratio: 420 / 300;
+  }
+  .brick-wrap svg {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+  }
+</style>

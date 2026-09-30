@@ -1,0 +1,230 @@
+---
+/**
+ * Contacto — SPEC §21. Formulario con honeypot + endpoint PHP.
+ * El form apunta a /api/contact.php (incluido en /public/api).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { company } from '../data/company';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Contacto', url: '/contacto' },
+];
+
+const profiles = [
+  { value: 'constructor', label: 'Soy constructor' },
+  { value: 'arquitecto', label: 'Soy arquitecto / ingeniero' },
+  { value: 'corralon', label: 'Tengo un corralón' },
+  { value: 'distribuidor', label: 'Quiero ser distribuidor' },
+  { value: 'particular', label: 'Soy particular' },
+];
+
+const waText = encodeURIComponent('Hola, quiero hacer una consulta sobre Cerámica Puerto Rico.');
+const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
+---
+
+<BaseLayout
+  title="Contacto | Cerámica Puerto Rico – Misiones"
+  description="Contactá a Cerámica Puerto Rico: planta en Puerto Rico, Misiones. Pedí tu cotización por WhatsApp o completá el formulario comercial."
+  path="/contacto"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Contacto</span>
+      <h1>Hablemos de tu obra</h1>
+      <p class="page-hero-sub">
+        Pedinos cotización, asesoramiento técnico o información sobre distribución.
+        Te respondemos a la brevedad.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <!-- Datos -->
+      <aside class="contact-info">
+        <div class="card">
+          <h2>Planta y ventas</h2>
+          <p>{company.address.street}</p>
+          <p>{company.address.locality}, {company.address.province}</p>
+          <p>{company.address.country}</p>
+          <p class="contact-phone">
+            <a href={`tel:${company.phone.tel}`}>{company.phone.display}</a>
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>WhatsApp</h2>
+          <p>Atención comercial directa.</p>
+          <a href={waHref} target="_blank" rel="noopener" class="btn btn-whatsapp">
+            Abrir WhatsApp
+          </a>
+        </div>
+
+        <div class="card">
+          <h2>Redes</h2>
+          <ul class="social-links">
+            <li><a href={company.social.instagram} target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href={company.social.facebook} target="_blank" rel="noopener">Facebook</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Formulario -->
+      <div>
+        <h2>Envianos tu consulta</h2>
+        <p class="form-intro">
+          Los campos con <span aria-hidden="true">*</span> son obligatorios.
+        </p>
+
+        <form
+          action="/api/contact.php"
+          method="POST"
+          class="contact-form"
+          data-contact-form
+        >
+          <!-- Honeypot anti-spam -->
+          <div class="hp" aria-hidden="true">
+            <label for="website">No completar este campo</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <label class="field">
+            <span>Nombre y apellido <span aria-hidden="true">*</span></span>
+            <input type="text" name="name" required minlength="2" maxlength="120" />
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span>Email <span aria-hidden="true">*</span></span>
+              <input type="email" name="email" required />
+            </label>
+            <label class="field">
+              <span>Teléfono / WhatsApp</span>
+              <input type="tel" name="phone" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Soy <span aria-hidden="true">*</span></span>
+            <select name="profile" required>
+              <option value="">Elegí una opción</option>
+              {profiles.map((p) => (
+                <option value={p.value}>{p.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Localidad</span>
+            <input type="text" name="locality" maxlength="120" />
+          </label>
+
+          <label class="field">
+            <span>Consulta <span aria-hidden="true">*</span></span>
+            <textarea name="message" required minlength="10" rows="6" maxlength="2000"></textarea>
+          </label>
+
+          <button type="submit" class="btn btn-primary">Enviar consulta</button>
+
+          <p class="form-status" data-form-status aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-form-status]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!status) return;
+    status.textContent = 'Enviando...';
+    status.dataset.kind = 'pending';
+
+    const data = new FormData(form);
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' },
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.ok) {
+        status.textContent = '¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.';
+        status.dataset.kind = 'success';
+        form.reset();
+      } else {
+        status.textContent = json.message || 'No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp.';
+        status.dataset.kind = 'error';
+      }
+    } catch {
+      status.textContent = 'Error de conexión. Probá de nuevo o escribinos por WhatsApp.';
+      status.dataset.kind = 'error';
+    }
+  });
+</script>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .page-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: var(--space-3); }
+  .page-hero-sub { color: var(--color-grafito-500); margin: 0; max-width: 60ch; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--space-7);
+  }
+  @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; } }
+
+  .contact-info { display: grid; gap: var(--space-4); align-content: start; }
+  .contact-info h2 { font-size: var(--fs-400); margin-bottom: var(--space-3); }
+  .contact-info p { color: var(--color-grafito-500); margin: 0 0 var(--space-1); }
+  .contact-phone a { font-size: var(--fs-400); font-weight: 700; color: var(--color-grafito-900); }
+  .social-links { list-style: none; padding: 0; margin: 0; }
+  .social-links li { padding: var(--space-1) 0; }
+
+  .form-intro { color: var(--color-grafito-500); margin-bottom: var(--space-5); }
+  .contact-form {
+    display: grid;
+    gap: var(--space-4);
+    background: var(--color-blanco);
+    padding: var(--space-6);
+    border: 1px solid var(--color-grafito-100);
+    border-radius: var(--radius-lg);
+  }
+  .field { display: flex; flex-direction: column; gap: var(--space-1); font-size: var(--fs-100); }
+  .field span { color: var(--color-grafito-700); font-weight: 500; }
+  .field input, .field select, .field textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-grafito-100);
+    border-radius: var(--radius-md);
+    background: var(--color-blanco);
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: 2px solid var(--color-terracota-500);
+    outline-offset: 1px;
+  }
+  .field textarea { resize: vertical; min-height: 120px; }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+
+  .hp { position: absolute; left: -9999px; height: 0; width: 0; overflow: hidden; }
+  .form-status {
+    font-size: var(--fs-100);
+    margin: 0;
+  }
+  .form-status[data-kind="success"] { color: #1b7a3d; }
+  .form-status[data-kind="error"] { color: var(--color-error); }
+  .form-status[data-kind="pending"] { color: var(--color-grafito-500); }
+</style>

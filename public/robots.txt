@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ceramicaptorico.com.ar/sitemap-index.xml

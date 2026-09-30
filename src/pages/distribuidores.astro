@@ -1,0 +1,175 @@
+---
+/**
+ * Distribuidores — SPEC §18. Lista + filtro por provincia (cliente-side).
+ * SPEC §39: filtro client-side, sin backend en primera etapa.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { distributors, provinces } from '../data/distributors';
+import { company } from '../data/company';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Distribuidores', url: '/distribuidores' },
+];
+
+const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${encodeURIComponent('Hola, quiero ser distribuidor de Cerámica Puerto Rico.')}`;
+---
+
+<BaseLayout
+  title="Dónde comprar Cerámica Puerto Rico | Distribuidores"
+  description="Encontrá dónde comprar ladrillos Cerámica Puerto Rico en Misiones y la región. Consultá distribuidores, teléfonos y puntos de venta."
+  path="/distribuidores"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Distribuidores</span>
+      <h1>Encontrá Cerámica Puerto Rico cerca tuyo</h1>
+      <p class="page-hero-sub">
+        Comprá directamente en planta o consultá por nuestros puntos de venta
+        habilitados en la región.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="filters">
+        <label class="filter-field">
+          <span>Provincia</span>
+          <select id="province-filter">
+            <option value="">Todas</option>
+            {provinces.map((p) => <option value={p}>{p}</option>)}
+          </select>
+        </label>
+      </div>
+
+      {distributors.length === 0 ? (
+        <div class="empty-state">
+          <p>Estamos actualizando la lista de distribuidores habilitados.</p>
+          <p>Mientras tanto, escribinos por WhatsApp para consultar el punto de venta más cercano a tu localidad.</p>
+          <a href={waHref} target="_blank" rel="noopener" class="btn btn-whatsapp">
+            Consultar por WhatsApp
+          </a>
+        </div>
+      ) : (
+        <div class="grid grid-3" id="distributors-grid">
+          {distributors.map((d) => (
+            <article
+              class="card distributor-card"
+              data-province={d.province}
+            >
+              <h2>{d.name}</h2>
+              <p class="distributor-loc">{d.locality}, {d.province}</p>
+              {d.address && <p class="distributor-addr">{d.address}</p>}
+              {d.phone && (
+                <p>
+                  <a href={`tel:${d.phone.replace(/\s/g, '')}`}>📞 {d.phone}</a>
+                </p>
+              )}
+              {d.whatsapp && (
+                <p>
+                  <a
+                    href={`https://wa.me/${d.whatsapp}`}
+                    target="_blank"
+                    rel="noopener"
+                  >💬 WhatsApp</a>
+                </p>
+              )}
+              {d.mapsUrl && (
+                <a href={d.mapsUrl} target="_blank" rel="noopener" class="btn btn-secondary">
+                  Cómo llegar
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section--tight section--dark cta">
+    <div class="container cta-block">
+      <div>
+        <h2>¿Querés ser distribuidor?</h2>
+        <p>Si tenés un corralón o punto de venta y querés sumar nuestra línea, hablamos.</p>
+      </div>
+      <a href={waHref} target="_blank" rel="noopener" class="btn btn-whatsapp">Quiero ser distribuidor</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const filter = document.querySelector<HTMLSelectElement>('#province-filter');
+  const cards = document.querySelectorAll<HTMLElement>('.distributor-card');
+  filter?.addEventListener('change', () => {
+    const value = filter.value;
+    cards.forEach((c) => {
+      const match = !value || c.dataset.province === value;
+      c.style.display = match ? '' : 'none';
+    });
+  });
+</script>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .page-hero h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: var(--space-3);
+  }
+  .page-hero-sub {
+    color: var(--color-grafito-500);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .filters {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: var(--fs-100);
+    color: var(--color-grafito-500);
+  }
+  .filter-field select {
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-grafito-100);
+    background: var(--color-blanco);
+    min-width: 220px;
+  }
+
+  .empty-state {
+    background: var(--color-blanco);
+    padding: var(--space-7);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    border: 1px dashed var(--color-grafito-100);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .distributor-card { display: flex; flex-direction: column; gap: var(--space-2); }
+  .distributor-card h2 { font-size: var(--fs-400); margin: 0; }
+  .distributor-loc { color: var(--color-terracota-600); font-weight: 600; margin: 0; }
+  .distributor-addr { color: var(--color-grafito-500); font-size: var(--fs-100); margin: 0; }
+
+  .cta-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+  .cta-block h2 { color: var(--color-blanco); margin-bottom: var(--space-2); }
+  .cta-block p { color: var(--color-grafito-100); margin: 0; }
+</style>

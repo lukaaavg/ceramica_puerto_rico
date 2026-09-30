@@ -1,0 +1,152 @@
+---
+/**
+ * Seo.astro — Componente SEO central.
+ *
+ * Genera <title>, meta description, canonical, OpenGraph, Twitter Cards
+ * y JSON-LD (Organization + LocalBusiness + BreadcrumbList + WebSite).
+ *
+ * SPEC §26: SEO técnico completo.
+ */
+import { company } from '../data/company';
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;          // ej: '/productos/' → se combina con SITE_URL
+  ogImage?: string;
+  type?: 'website' | 'article';
+  breadcrumbs?: BreadcrumbItem[];
+  faqJsonLd?: { q: string; a: string }[];
+  productJsonLd?: Record<string, unknown>;
+}
+
+const SITE_URL = 'https://ceramicaptorico.com.ar';
+const SITE_NAME = company.name;
+const SITE_DESCRIPTION =
+  'Fábrica de ladrillos cerámicos huecos en Puerto Rico, Misiones. Conocé nuestros productos, información técnica, distribuidores y solicitá tu presupuesto.';
+
+const {
+  title,
+  description,
+  path = '',
+  ogImage = '/og-default.png',
+  type = 'website',
+  breadcrumbs,
+  faqJsonLd,
+  productJsonLd,
+} = Astro.props;
+
+const canonical = new URL(path, SITE_URL).toString();
+const fullOgImage = new URL(ogImage, SITE_URL).toString();
+
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE_NAME,
+  legalName: company.legalName,
+  url: SITE_URL,
+  logo: new URL('/logo.svg', SITE_URL).toString(),
+  description: SITE_DESCRIPTION,
+  sameAs: [company.social.instagram, company.social.facebook],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: company.phone.tel,
+    contactType: 'sales',
+    areaServed: 'AR',
+    availableLanguage: ['es'],
+  },
+};
+
+const localBusinessLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': new URL('/#empresa', SITE_URL).toString(),
+  name: SITE_NAME,
+  image: fullOgImage,
+  telephone: company.phone.tel,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: company.address.street,
+    addressLocality: company.address.locality,
+    addressRegion: company.address.province,
+    addressCountry: company.address.country,
+  },
+  url: SITE_URL,
+};
+
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  url: SITE_URL,
+  name: SITE_NAME,
+  inLanguage: 'es-AR',
+};
+
+const breadcrumbLd =
+  breadcrumbs && breadcrumbs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbs.map((b, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: b.name,
+          item: new URL(b.url, SITE_URL).toString(),
+        })),
+      }
+    : null;
+
+const faqLd =
+  faqJsonLd && faqJsonLd.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqJsonLd.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null;
+---
+
+<!-- Primary -->
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="theme-color" content="#b8623b" />
+<meta name="robots" content="index,follow" />
+
+<!-- OpenGraph -->
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:locale" content="es_AR" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+
+<!-- JSON-LD -->
+<script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(localBusinessLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
+{breadcrumbLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+)}
+{faqLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+)}
+{productJsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(productJsonLd)} />
+)}
