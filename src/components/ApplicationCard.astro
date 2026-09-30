@@ -1,0 +1,45 @@
+---
+/**
+ * ApplicationCard.astro — para grids de "qué necesitás construir".
+ */
+interface Props {
+  title: string;
+  href: string;
+  description?: string;
+  icon?: 'wall' | 'building' | 'home' | 'chain' | 'roof';
+}
+
+const { title, href, description, icon = 'wall' } = Astro.props;
+
+const icons: Record<string, string> = {
+  wall: 'M3 21h18M5 21V8h14v13M9 12h6M9 16h6',
+  building: 'M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h.01M15 17h.01',
+  home: 'M3 12l9-9 9 9M5 10v11h14V10',
+  chain: 'M10 13a5 5 0 0 0 7.07 0l3.54-3.54a5 5 0 1 0-7.07-7.07L11 5M14 11a5 5 0 0 0-7.07 0L3.39 14.54a5 5 0 0 0 7.07 7.07L13 19',
+  roof: 'M3 12l9-9 9 9M5 10v11h14V10M9 21v-6h6v6',
+};
+---
+
+<a href={href} class="card app-card">
+  <svg viewBox="0 0 24 24" width="32" height="32" fill="none"
+       stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+       aria-hidden="true">
+    <path d={icons[icon]} />
+  </svg>
+  <h3>{title}</h3>
+  {description && <p>{description}</p>}
+</a>
+
+<style>
+  .app-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    color: var(--color-grafito-900);
+    text-decoration: none;
+  }
+  .app-card:hover { color: var(--color-terracota-600); }
+  .app-card svg { color: var(--color-terracota-500); margin-bottom: var(--space-2); }
+  .app-card h3 { font-size: var(--fs-300); margin: 0; }
+  .app-card p { color: var(--color-grafito-500); margin: 0; font-size: var(--fs-100); }
+</style>

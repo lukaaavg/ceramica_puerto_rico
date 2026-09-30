@@ -1,0 +1,122 @@
+---
+/**
+ * Preguntas frecuentes — SPEC §20.
+ * Incluye FAQPage JSON-LD para SEO.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { faq } from '../data/faq';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Preguntas frecuentes', url: '/preguntas-frecuentes' },
+];
+
+const faqJsonLd = faq.map((f) => ({ q: f.q, a: f.a }));
+---
+
+<BaseLayout
+  title="Preguntas Frecuentes | Cerámica Puerto Rico"
+  description="Respuestas a las preguntas más frecuentes sobre ladrillos cerámicos Cerámica Puerto Rico: elección, rendimiento, almacenamiento, presupuestos y entregas."
+  path="/preguntas-frecuentes"
+  breadcrumbs={breadcrumbs}
+  faqJsonLd={faqJsonLd}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Preguntas frecuentes</span>
+      <h1>Resolvemos tus dudas</h1>
+      <p class="page-hero-sub">
+        Si no encontrás la respuesta que buscás, escribinos por WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container faq-container">
+      {faq.map((item) => (
+        <details class="faq-item">
+          <summary>
+            <span>{item.q}</span>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </summary>
+          <p>{item.a}</p>
+          {item.pending && (
+            <p class="faq-pending-note">
+              Esta respuesta se completará con datos validados por la empresa.
+            </p>
+          )}
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--tight section--dark cta">
+    <div class="container cta-block">
+      <h2>¿Tenés otra pregunta?</h2>
+      <a href="/contacto" class="btn btn-primary">Escribinos</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .page-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: var(--space-3); }
+  .page-hero-sub { color: var(--color-grafito-500); margin: 0; }
+
+  .faq-container {
+    max-width: 800px;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--color-grafito-100);
+    padding: var(--space-4) 0;
+  }
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    cursor: pointer;
+    font-size: var(--fs-300);
+    font-weight: 600;
+    color: var(--color-grafito-900);
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--color-terracota-600); }
+  .faq-toggle {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-terracota-50);
+    color: var(--color-terracota-600);
+    font-size: var(--fs-300);
+    transition: transform var(--t-base);
+  }
+  .faq-item[open] .faq-toggle { transform: rotate(45deg); }
+  .faq-item[open] summary { margin-bottom: var(--space-3); }
+  .faq-item p { color: var(--color-grafito-500); margin: 0 0 var(--space-3); }
+  .faq-pending-note {
+    font-size: var(--fs-50);
+    color: var(--color-terracota-700);
+    background: var(--color-terracota-50);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    margin: 0;
+  }
+
+  .cta-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+  .cta-block h2 { color: var(--color-blanco); margin: 0; }
+</style>

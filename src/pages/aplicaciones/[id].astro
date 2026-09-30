@@ -1,0 +1,89 @@
+---
+/**
+ * Aplicación individual con productos relacionados.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { applications, productsByApplication } from '../../data/applications';
+import type { Application } from '../../data/products';
+
+export function getStaticPaths() {
+  return applications.map((app) => ({
+    params: { id: app.id },
+    props: { app },
+  }));
+}
+
+const { app } = Astro.props;
+const products = productsByApplication(app.id as Application);
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Aplicaciones', url: '/aplicaciones' },
+  { name: app.title, url: `/aplicaciones/${app.id}` },
+];
+---
+
+<BaseLayout
+  title={`${app.title} | Cerámica Puerto Rico`}
+  description={app.description}
+  path={`/aplicaciones/${app.id}`}
+  breadcrumbs={breadcrumbs}
+>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb">
+        {breadcrumbs.map((b, i) => (
+          <span>
+            <a href={b.url}>{b.name}</a>
+            {i < breadcrumbs.length - 1 && <span class="sep">›</span>}
+          </span>
+        ))}
+      </nav>
+      <h1>{app.title}</h1>
+      <p class="page-hero-sub">{app.description}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {products.length > 0 ? (
+        <>
+          <h2>Productos recomendados</h2>
+          <div class="grid grid-3">
+            {products.map((p) => <ProductCard product={p} />)}
+          </div>
+        </>
+      ) : (
+        <div class="empty-state">
+          <p>Próximamente publicaremos los productos recomendados para esta aplicación.</p>
+          <a href="/productos" class="btn btn-primary">Ver catálogo completo</a>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .breadcrumb {
+    font-size: var(--fs-100);
+    color: var(--color-grafito-500);
+    margin-bottom: var(--space-4);
+  }
+  .breadcrumb a { color: var(--color-grafito-500); }
+  .breadcrumb a:hover { color: var(--color-terracota-600); }
+  .breadcrumb .sep { margin: 0 0.5rem; color: var(--color-grafito-300); }
+  .page-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: var(--space-3); }
+  .page-hero-sub { color: var(--color-grafito-500); max-width: 60ch; margin: 0; }
+  .empty-state {
+    background: var(--color-blanco);
+    padding: var(--space-7);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    border: 1px dashed var(--color-grafito-100);
+  }
+</style>

@@ -1,0 +1,201 @@
+---
+/**
+ * Header.astro
+ * SPEC §22 — navegación principal con CTA "Solicitar presupuesto".
+ * Layout: [logo] ........ [nav centrado] ........ [CTA derecha]
+ * En móvil: menú colapsable + WhatsApp sticky.
+ */
+import { company } from '../data/company';
+
+const navItems = [
+  { href: '/empresa', label: 'Empresa' },
+  { href: '/productos', label: 'Productos' },
+  { href: '/aplicaciones', label: 'Aplicaciones' },
+  { href: '/distribuidores', label: 'Distribuidores' },
+  { href: '/recursos-tecnicos', label: 'Recursos técnicos' },
+  { href: '/preguntas-frecuentes', label: 'FAQ' },
+  { href: '/contacto', label: 'Contacto' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="brand" aria-label={`Ir al inicio de ${company.name}`}>
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="44" height="44">
+          <defs>
+            <linearGradient id="hdr-brick" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#d9986c"/>
+              <stop offset="100%" stop-color="#7c3b21"/>
+            </linearGradient>
+          </defs>
+          <rect x="3" y="9" width="42" height="30" rx="4" fill="#0f0f12"/>
+          <rect x="7" y="14" width="34" height="20" rx="2" fill="url(#hdr-brick)"/>
+          <rect x="11" y="18" width="6" height="6" rx="1" fill="#faf7f2"/>
+          <rect x="21" y="18" width="6" height="6" rx="1" fill="#faf7f2"/>
+          <rect x="31" y="18" width="6" height="6" rx="1" fill="#faf7f2"/>
+          <rect x="11" y="27" width="6" height="4" rx="1" fill="#faf7f2"/>
+          <rect x="21" y="27" width="6" height="4" rx="1" fill="#faf7f2"/>
+          <rect x="31" y="27" width="6" height="4" rx="1" fill="#faf7f2"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>Cerámica</strong>
+        <em>Puerto Rico</em>
+      </span>
+    </a>
+
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" data-nav-toggle>
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" data-site-nav aria-label="Navegación principal">
+      <ul>
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'nav-link',
+                { 'is-active': currentPath === item.href || currentPath.startsWith(item.href + '/') },
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href="/contacto" class="btn btn-primary nav-cta">Solicitar presupuesto</a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-blanco);
+    border-bottom: 1px solid var(--color-grafito-100);
+    backdrop-filter: saturate(180%) blur(8px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--color-grafito-900);
+  }
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    background: var(--color-terracota-50);
+    border-radius: var(--radius-md);
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+  }
+  .brand-text strong {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: var(--fs-100);
+  }
+  .brand-text em {
+    font-style: normal;
+    color: var(--color-terracota-600);
+    font-weight: 700;
+    font-size: var(--fs-400);
+  }
+
+  .nav-link {
+    color: var(--color-grafito-700);
+    font-weight: 500;
+    font-size: var(--fs-200);
+    border-bottom: 2px solid transparent;
+    transition: border-color var(--t-fast), color var(--t-fast);
+  }
+  .nav-link:hover { color: var(--color-terracota-600); }
+  .nav-link.is-active {
+    color: var(--color-terracota-600);
+    border-bottom-color: var(--color-terracota-500);
+  }
+
+  .nav-cta {
+    font-size: var(--fs-200);
+    padding: 0.85rem 1.5rem;
+  }
+
+  .nav-toggle {
+    display: none;
+    background: transparent;
+    border: 0;
+    padding: var(--space-2);
+    cursor: pointer;
+  }
+  .nav-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-grafito-900);
+    margin: 5px 0;
+    transition: transform var(--t-base);
+  }
+
+  @media (max-width: 1100px) {
+    .site-nav > ul { gap: 1.5rem; }
+    .nav-link { font-size: var(--fs-100); }
+  }
+
+  @media (max-width: 960px) {
+    .header-inner {
+      flex-wrap: wrap;
+    }
+    .nav-toggle { display: block; order: 3; }
+    .site-nav {
+      order: 4;
+      flex-basis: 100%;
+      background: var(--color-blanco);
+      border-top: 1px solid var(--color-grafito-100);
+      padding: var(--space-3) 0 var(--space-4);
+      display: none;
+    }
+    .site-nav.is-open { display: block; }
+    .site-nav > ul {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+    .site-nav li {
+      border-bottom: 1px solid var(--color-grafito-100);
+    }
+    .site-nav .nav-link {
+      display: block;
+      padding: var(--space-3) 0;
+      border-bottom: 0;
+      font-size: var(--fs-200);
+    }
+    .nav-cta {
+      order: 2;
+      font-size: var(--fs-100);
+      padding: 0.6rem 1rem;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-site-nav]');
+  toggle?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+  });
+</script>

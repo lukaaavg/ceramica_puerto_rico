@@ -1,0 +1,44 @@
+---
+/**
+ * 404 — página de error.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Página no encontrada | Cerámica Puerto Rico"
+  description="La página que buscás no existe o fue movida."
+  path="/404"
+>
+  <section class="section notfound">
+    <div class="container">
+      <p class="big">404</p>
+      <h1>No encontramos esa página</h1>
+      <p>El enlace puede haber cambiado o la página ya no existe.</p>
+      <div class="notfound-actions">
+        <a href="/" class="btn btn-primary">Volver al inicio</a>
+        <a href="/contacto" class="btn btn-secondary">Contactarnos</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound { text-align: center; padding-block: var(--space-10); }
+  .big {
+    font-family: var(--font-mono);
+    font-size: 6rem;
+    font-weight: 800;
+    color: var(--color-terracota-500);
+    margin: 0 0 var(--space-3);
+    line-height: 1;
+  }
+  .notfound h1 { margin-bottom: var(--space-3); }
+  .notfound p { color: var(--color-grafito-500); margin-bottom: var(--space-5); }
+  .notfound-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+</style>

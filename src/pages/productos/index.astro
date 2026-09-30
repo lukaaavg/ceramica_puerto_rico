@@ -1,0 +1,127 @@
+---
+/**
+ * Productos — listado con filtros básicos.
+ * SPEC §15: filtros por aplicación / tipo / uso. Cada producto con ficha.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, productTypes } from '../../data/products';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Productos', url: '/productos' },
+];
+---
+
+<BaseLayout
+  title="Ladrillos Cerámicos Huecos | Cerámica Puerto Rico"
+  description="Conocé la línea de ladrillos cerámicos Cerámica Puerto Rico: medidas, aplicaciones, rendimiento, información técnica y disponibilidad."
+  path="/productos"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Catálogo</span>
+      <h1>Ladrillos cerámicos para cada obra</h1>
+      <p class="page-hero-sub">
+        Línea de ladrillos huecos y portantes producidos en nuestra planta de
+        Puerto Rico, Misiones. Información técnica completa una vez validada
+        con el fabricante.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="filters">
+        <h2 class="filters-title">Filtrar por tipo</h2>
+        <ul class="filter-list">
+          <li><a href="/productos" class="filter-chip is-active">Todos</a></li>
+          {productTypes.map((t) => (
+            <li><a href={`/productos?type=${t.id}`} class="filter-chip">{t.label}</a></li>
+          ))}
+        </ul>
+        <p class="filters-note">
+          El catálogo definitivo se publica una vez validadas las medidas y rendimientos con el fabricante.
+        </p>
+      </div>
+
+      <div class="grid grid-3 product-grid">
+        {products.map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--dark">
+    <div class="container cta-block">
+      <div>
+        <h2>¿Necesitás ayuda para elegir?</h2>
+        <p>Contanos qué tipo de obra estás planificando y te recomendamos el producto.</p>
+      </div>
+      <a href="/contacto" class="btn btn-primary">Solicitar asesoramiento</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .page-hero h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: var(--space-3);
+  }
+  .page-hero-sub {
+    color: var(--color-grafito-500);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .filters {
+    margin-bottom: var(--space-7);
+  }
+  .filters-title {
+    font-size: var(--fs-300);
+    margin-bottom: var(--space-3);
+  }
+  .filter-list {
+    display: flex;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-3);
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-grafito-100);
+    color: var(--color-grafito-700);
+    font-size: var(--fs-100);
+    font-weight: 500;
+    background: var(--color-blanco);
+  }
+  .filter-chip:hover { border-color: var(--color-terracota-500); color: var(--color-terracota-600); }
+  .filter-chip.is-active {
+    background: var(--color-terracota-500);
+    border-color: var(--color-terracota-500);
+    color: var(--color-blanco);
+  }
+  .filters-note {
+    color: var(--color-grafito-500);
+    font-size: var(--fs-100);
+    margin: 0;
+  }
+
+  .cta-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+  .cta-block h2 { color: var(--color-blanco); margin-bottom: var(--space-2); }
+  .cta-block p { color: var(--color-grafito-100); margin: 0; }
+</style>

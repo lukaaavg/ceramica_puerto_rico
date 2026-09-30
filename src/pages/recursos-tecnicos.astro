@@ -1,0 +1,164 @@
+---
+/**
+ * Recursos técnicos — SPEC §19.
+ * Centraliza fichas técnicas, catálogo, manuales, calculadora, CAD/BIM.
+ * Hasta validar los assets reales, mostramos estructura con placeholders.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const breadcrumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Recursos técnicos', url: '/recursos-tecnicos' },
+];
+
+const sections = [
+  {
+    id: 'fichas-tecnicas',
+    title: 'Fichas técnicas',
+    description: 'Una por modelo con medidas, peso, rendimiento, ensayos y aplicación.',
+    items: [
+      { name: 'Ladrillo Hueco 8 — Ficha técnica', pending: true },
+      { name: 'Ladrillo Hueco 12 — Ficha técnica', pending: true },
+      { name: 'Ladrillo Hueco 18 — Ficha técnica', pending: true },
+      { name: 'Ladrillo Portante — Ficha técnica', pending: true },
+    ],
+  },
+  {
+    id: 'catalogos',
+    title: 'Catálogo',
+    description: 'Línea completa en PDF.',
+    items: [
+      { name: 'Catálogo general 2026', pending: true },
+    ],
+  },
+  {
+    id: 'manuales',
+    title: 'Manuales y recomendaciones',
+    description: 'Buenas prácticas de colocación, almacenamiento y obra.',
+    items: [
+      { name: 'Recomendaciones de colocación', pending: true },
+      { name: 'Almacenamiento y transporte', pending: true },
+    ],
+  },
+  {
+    id: 'calculadora',
+    title: 'Calculadora de ladrillos',
+    description: 'Calculá unidades, desperdicio y pallets para tu pared. Disponible próximamente.',
+    items: [
+      { name: 'Calculadora (próximamente)', pending: true },
+    ],
+  },
+  {
+    id: 'descargas',
+    title: 'Descargas',
+    description: 'Documentos normativos, ensayos y certificaciones una vez validados.',
+    items: [
+      { name: 'Ensayos de resistencia', pending: true },
+      { name: 'Certificaciones (pendiente de validación)', pending: true },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Fichas Técnicas de Ladrillos Cerámicos | Cerámica Puerto Rico"
+  description="Centro técnico de Cerámica Puerto Rico: fichas técnicas, catálogo, manuales de colocación, calculadora de ladrillos y documentación normativa."
+  path="/recursos-tecnicos"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Recursos técnicos</span>
+      <h1>Información para construir mejor</h1>
+      <p class="page-hero-sub">
+        Fichas técnicas, catálogo, manuales y herramientas para arquitectos,
+        ingenieros, constructores y maestros.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container resource-toc">
+      <h2>Secciones</h2>
+      <ul>
+        {sections.map((s) => (
+          <li><a href={`#${s.id}`}>{s.title}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {sections.map((s) => (
+    <section class="section section--tight" id={s.id}>
+      <div class="container">
+        <h2>{s.title}</h2>
+        <p class="section-intro">{s.description}</p>
+        <ul class="resource-list">
+          {s.items.map((item) => (
+            <li class="card">
+              <div class="resource-meta">
+                {item.pending && <span class="pending">Pendiente</span>}
+                <h3>{item.name}</h3>
+              </div>
+              <a href="#" class="btn btn-secondary" aria-disabled="true">Descargar</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+  .page-hero {
+    background: var(--color-terracota-50);
+    padding-block: var(--space-8);
+  }
+  .page-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: var(--space-3); }
+  .page-hero-sub { color: var(--color-grafito-500); max-width: 60ch; margin: 0; }
+
+  .resource-toc ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0 0;
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .resource-toc a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-grafito-100);
+    border-radius: 999px;
+    color: var(--color-grafito-700);
+    background: var(--color-blanco);
+    font-size: var(--fs-100);
+  }
+  .resource-toc a:hover { border-color: var(--color-terracota-500); color: var(--color-terracota-600); }
+
+  .section-intro {
+    color: var(--color-grafito-500);
+    max-width: 60ch;
+    margin-bottom: var(--space-5);
+  }
+  .resource-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .resource-list .card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .resource-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .resource-meta h3 { margin: 0; font-size: var(--fs-300); }
+</style>
