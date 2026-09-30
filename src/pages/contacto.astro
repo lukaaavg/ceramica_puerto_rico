@@ -138,13 +138,29 @@ const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
 <script>
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
   const status = document.querySelector<HTMLElement>('[data-form-status]');
+  const submitBtn = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  const ICONS = {
+    pending: '<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.2-8.55"/></svg>',
+    success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+  };
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!status) return;
-    status.textContent = 'Enviando...';
+    if (!status || !submitBtn) return;
+
     status.dataset.kind = 'pending';
+    status.innerHTML = `${ICONS.pending}<span>Enviando tu consulta...</span>`;
+    submitBtn.disabled = true;
 
     const data = new FormData(form);
+    // Agregar contexto: de dónde vino el usuario
+    const ref = document.referrer;
+    if (ref && ref.includes(window.location.host)) {
+      data.append('_from', ref);
+    }
+
     try {
       const res = await fetch(form.action, {
         method: 'POST',
@@ -153,16 +169,18 @@ const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
       });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
-        status.textContent = '¡Gracias! Recibimos tu consulta y te respondemos a la brevedad.';
         status.dataset.kind = 'success';
+        status.innerHTML = `${ICONS.success}<span><strong>¡Gracias!</strong> Recibimos tu consulta y te respondemos a la brevedad.</span>`;
         form.reset();
+        status.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
-        status.textContent = json.message || 'No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp.';
-        status.dataset.kind = 'error';
+        throw new Error(json.message || 'Error del servidor');
       }
     } catch {
-      status.textContent = 'Error de conexión. Probá de nuevo o escribinos por WhatsApp.';
       status.dataset.kind = 'error';
+      status.innerHTML = `${ICONS.error}<span>No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp.</span>`;
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 </script>
@@ -221,10 +239,33 @@ const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
 
   .hp { position: absolute; left: -9999px; height: 0; width: 0; overflow: hidden; }
   .form-status {
+    display: none;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
     font-size: var(--fs-100);
     margin: 0;
+    line-height: 1.5;
   }
-  .form-status[data-kind="success"] { color: #1b7a3d; }
-  .form-status[data-kind="error"] { color: var(--color-error); }
-  .form-status[data-kind="pending"] { color: var(--color-grafito-500); }
+  .form-status:not([data-kind=""]) { display: flex; }
+  .form-status[data-kind="success"] {
+    background: #ecfdf5;
+    color: #1b7a3d;
+    border: 1px solid #a7f3d0;
+  }
+  .form-status[data-kind="error"] {
+    background: #fef2f2;
+    color: var(--color-error);
+    border: 1px solid #fecaca;
+  }
+  .form-status[data-kind="pending"] {
+    background: var(--color-grafito-50);
+    color: var(--color-grafito-700);
+    border: 1px solid var(--color-grafito-100);
+  }
+  .form-status svg { flex-shrink: 0; }
+  .btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { animation: spin 0.8s linear infinite; }
 </style>

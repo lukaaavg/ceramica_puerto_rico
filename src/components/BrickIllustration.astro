@@ -232,12 +232,11 @@ const cardH = size === 'card' ? 300 : 500;
 
     {/* Líneas de pared en cara superior */}
     <g clip-path={`url(#${id}-clip-top)`}>
-      {topLines.map((l, i) => (
+      {topLines.map((l) => (
         <line
           x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
           stroke="rgba(60,20,10,0.45)"
           stroke-width="1.2"
-          key={i}
         />
       ))}
     </g>
@@ -247,8 +246,8 @@ const cardH = size === 'card' ? 300 : 500;
 
     {/* Huecos en cara frontal */}
     <g clip-path={`url(#${id}-clip-front)`}>
-      {frontHoles.map((h, i) => (
-        <g key={i}>
+      {frontHoles.map((h) => (
+        <g>
           <rect
             x={h.x} y={h.y} width={h.w} height={h.h}
             fill={`url(#${id}-hole)`} rx="2"

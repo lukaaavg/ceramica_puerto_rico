@@ -118,9 +118,9 @@ const breadcrumbs = [{ name: 'Inicio', url: '/' }];
     <div class="container">
       <span class="section-eyebrow" style="color: var(--color-terracota-300);">Beneficios</span>
       <h2>Cerámica que trabaja durante toda la vida de la obra</h2>
-      <ul class="benefits-list">
+      <ul class="benefits-list" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; padding: 0; margin: var(--space-6) 0 0; list-style: none;">
         {benefits.map((b) => (
-          <li>
+          <li style="flex: 0 1 320px; max-width: 100%;">
             <h3>{b.title}</h3>
             <p>{b.desc}</p>
           </li>
@@ -369,8 +369,6 @@ const breadcrumbs = [{ name: 'Inicio', url: '/' }];
     list-style: none;
     margin: var(--space-6) 0 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: var(--space-5);
   }
   .benefits-list li {
@@ -498,7 +496,8 @@ const breadcrumbs = [{ name: 'Inicio', url: '/' }];
     font-size: var(--fs-100);
   }
   @media (max-width: 760px) {
-    .history-block { grid-template-columns: 1fr; }
+    .history-block { grid-template-columns: 1fr; padding: var(--space-5); }
+    .history-timeline { min-width: 0; }
   }
 
   /* Coverage */

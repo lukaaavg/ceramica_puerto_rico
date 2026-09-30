@@ -91,9 +91,9 @@ const values = [
         Un proceso controlado de punta a punta, desde la materia prima hasta el
         despacho en planta.
       </p>
-      <ol class="process-list">
+      <ol class="process-list" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; padding: 0; margin: var(--space-6) 0 0; list-style: none;">
         {process.map((p) => (
-          <li>
+          <li style="flex: 0 1 280px; max-width: 100%;">
             <span class="step-num">{p.step}</span>
             <div>
               <h3>{p.title}</h3>
@@ -175,8 +175,6 @@ const values = [
     list-style: none;
     margin: var(--space-6) 0 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: var(--space-4);
   }
   .process-list li {

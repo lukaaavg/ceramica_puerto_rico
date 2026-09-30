@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# No indexar páginas internas que no aportan valor SEO
+Disallow: /api/
+Disallow: /404
+
 Sitemap: https://ceramicaptorico.com.ar/sitemap-index.xml
