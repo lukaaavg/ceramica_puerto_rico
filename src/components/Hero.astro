@@ -135,6 +135,14 @@ const {
     flex-wrap: wrap;
     margin-bottom: var(--space-6);
   }
+  .hero-actions .btn {
+    flex: 1 1 auto;
+    min-width: 180px;
+    justify-content: center;
+  }
+  @media (min-width: 540px) {
+    .hero-actions .btn { flex: 0 1 auto; min-width: 0; }
+  }
   .hero-meta {
     display: inline-flex;
     align-items: center;

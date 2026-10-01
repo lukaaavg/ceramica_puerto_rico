@@ -85,6 +85,17 @@ const websiteLd = {
   url: SITE_URL,
   name: SITE_NAME,
   inLanguage: 'es-AR',
+  description: SITE_DESCRIPTION,
+  publisher: { '@type': 'Organization', name: SITE_NAME },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE_URL}/productos?q={search_term_string}`,
+    },
+    // SPEC: search interno (placeholder, se activa cuando agreguemos /buscar)
+    'query-input': 'required name=search_term_string',
+  },
 };
 
 const breadcrumbLd =

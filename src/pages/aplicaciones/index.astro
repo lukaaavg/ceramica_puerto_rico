@@ -36,7 +36,7 @@ const cards = applications.map((a) => ({
 
   <section class="section">
     <div class="container">
-      <div class="grid grid-3">
+      <div style="display: flex; flex-direction: column; gap: var(--space-3); max-width: 900px;">
         {cards.map((c) => (
           <a href={`/aplicaciones/${c.id}`} class="card app-card">
             {c.pending && <span class="pending">Pendiente de validación</span>}
@@ -68,17 +68,21 @@ const cards = applications.map((a) => ({
   .app-card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    justify-content: center;
+    gap: var(--space-1);
+    padding: var(--space-4);
     text-decoration: none;
     color: inherit;
+    min-height: 96px;
   }
   .app-card h2 {
-    font-size: var(--fs-500);
-    margin: var(--space-2) 0;
+    font-size: var(--fs-400);
+    margin: 0;
+    line-height: 1.2;
   }
   .product-count {
     color: var(--color-grafito-500);
-    font-size: var(--fs-100);
+    font-size: var(--fs-50);
     margin: 0;
   }
   .card-cta {
