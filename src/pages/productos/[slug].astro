@@ -3,7 +3,7 @@
  * Ficha de producto dinámica.
  * SPEC §5: información técnica completa + CTA.
  */
-import BrickIllustration from '../../components/BrickIllustration.astro';
+import ProductMedia from '../../components/ProductMedia.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { products } from '../../data/products';
 import { company } from '../../data/company';
@@ -62,8 +62,12 @@ const productJsonLd = {
 
       <div class="product-grid">
         <div class="product-visual">
-          <BrickIllustration product={product} size="detail" />
-          <p class="visual-note">Ilustración técnica — imagen real pendiente de sesión fotográfica.</p>
+          <ProductMedia product={product} size="detail" />
+          <p class="visual-note">
+            {product.image
+              ? 'Foto del producto.'
+              : 'Ilustración técnica — imagen real pendiente de sesión fotográfica.'}
+          </p>
         </div>
 
         <div class="product-info">

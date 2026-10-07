@@ -1,38 +1,20 @@
 ---
 /**
- * Footer.astro — pie de página con datos de contacto y enlaces secundarios.
+ * Footer.astro — 4 columnas (marca, catálogo técnico, planta y logística,
+ * cotización inmediata) + barra legal inferior.
  */
+import Logo from './Logo.astro';
 import { company } from '../data/company';
 
 const year = new Date().getFullYear();
 
-const navCols = [
-  {
-    title: 'Empresa',
-    links: [
-      { href: '/empresa', label: 'Sobre nosotros' },
-      { href: '/empresa#proceso', label: 'Proceso productivo' },
-      { href: '/empresa#cobertura', label: 'Cobertura' },
-    ],
-  },
-  {
-    title: 'Productos',
-    links: [
-      { href: '/productos', label: 'Catálogo' },
-      { href: '/aplicaciones', label: 'Aplicaciones' },
-      { href: '/productos?type=cerramiento', label: 'Cerramiento' },
-      { href: '/productos?type=portante', label: 'Portantes' },
-    ],
-  },
-  {
-    title: 'Soporte',
-    links: [
-      { href: '/recursos-tecnicos', label: 'Recursos técnicos' },
-      { href: '/preguntas-frecuentes', label: 'Preguntas frecuentes' },
-      { href: '/distribuidores', label: 'Distribuidores' },
-      { href: '/contacto', label: 'Contacto' },
-    ],
-  },
+const catalogLinks = [
+  { href: '/productos?type=portante', label: 'Ladrillos Portantes' },
+  { href: '/productos?type=comun', label: 'Ladrillos Comunes' },
+  { href: '/productos?type=visto', label: 'Ladrillos Vistos' },
+  { href: '/productos/18x18x24-liviano', label: 'Ladrillos Livianos' },
+  { href: '/productos/peine-encadenado', label: 'Peine Encadenado' },
+  { href: '/productos/losa-sapo-43x12x20', label: 'Losa Sapo 43x12x20' },
 ];
 ---
 
@@ -40,115 +22,170 @@ const navCols = [
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <p class="footer-title">
-          <strong>Cerámica</strong> <em>Puerto Rico</em>
+        <a href="/" class="footer-logo" aria-label={`Ir al inicio de ${company.name}`}>
+          <Logo height={34} />
+        </a>
+        <p class="footer-desc">
+          Fabricación y distribución de ladrillos cerámicos huecos, portantes y
+          piezas de alta resistencia estructural. Soluciones para constructoras
+          desde Puerto Rico, Misiones.
         </p>
-        <p class="footer-tagline">{company.tagline}</p>
-        <address>
-          <p>{company.address.street}</p>
-          <p>{company.address.locality}, {company.address.province} — {company.address.country}</p>
-          <p>
-            <a href={`tel:${company.phone.tel}`}>{company.phone.display}</a>
-          </p>
-        </address>
+        <p class="footer-contact">
+          <a href={`tel:${company.phone.tel}`}>{company.phone.display}</a>
+        </p>
       </div>
 
-      {navCols.map((col) => (
-        <nav class="footer-col" aria-label={col.title}>
-          <h4>{col.title}</h4>
-          <ul>
-            {col.links.map((l) => (
-              <li><a href={l.href}>{l.label}</a></li>
-            ))}
-          </ul>
-        </nav>
-      ))}
+      <nav class="footer-col" aria-label="Catálogo técnico">
+        <h4>Catálogo Técnico</h4>
+        <ul>
+          {catalogLinks.map((l) => (
+            <li><a href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
 
       <div class="footer-col">
-        <h4>Canales</h4>
-        <ul>
+        <h4>Planta &amp; Logística</h4>
+        <ul class="footer-places">
           <li>
-            <a
-              href={`https://wa.me/${company.branches[0].whatsapp}`}
-              target="_blank"
-              rel="noopener"
-            >
-              WhatsApp
-            </a>
+            <span class="footer-place-title">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5" />
+              </svg>
+              Planta Industrial
+            </span>
+            <span class="footer-place-text">
+              {company.address.street}, {company.address.locality},
+              {company.address.province}
+            </span>
           </li>
-          <li><a href={company.social.instagram} target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href={company.social.facebook} target="_blank" rel="noopener">Facebook</a></li>
+          <li>
+            <span class="footer-place-title">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="5.5" cy="17.5" r="2.5" />
+                <circle cx="18.5" cy="17.5" r="2.5" />
+                <path d="M8 17.5h8M12 17.5V6h6.5v11.5" />
+              </svg>
+              Despacho y Ventas
+            </span>
+            <span class="footer-place-text">
+              Lun a Vie 07:00 a 17:00 hs<br />Sáb 07:00 a 12:00 hs
+            </span>
+          </li>
         </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Cotización Inmediata</h4>
+        <p class="footer-cta-text">
+          Atención técnica especializada para soluciones de arquitectura,
+          constructores y obras civiles.
+        </p>
+        <div class="footer-cta-actions">
+          <a href="/contacto" class="btn btn-primary btn-block">Solicitar Presupuesto</a>
+          <a href="/distribuidores" class="btn btn-secondary btn-block">
+            Ver Mapa de Distribución
+          </a>
+        </div>
       </div>
     </div>
 
     <div class="footer-bottom">
       <p>© {year} {company.legalName}. Todos los derechos reservados.</p>
-      <p>
-        Hecho en Misiones para construir nuestra región.
-      </p>
+      <ul class="footer-legal">
+        <li><a href="/empresa">Industria Misionera</a></li>
+        <li><a href="/recursos-tecnicos">Términos de Despacho</a></li>
+        <li><a href="/recursos-tecnicos">Política de Calidad</a></li>
+      </ul>
     </div>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    background: var(--color-grafito-900);
-    color: var(--color-grafito-100);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-top: 1px solid var(--line);
     padding-block: var(--space-8) var(--space-5);
-    margin-top: var(--space-9);
+    font-size: var(--fs-100);
   }
+
   .footer-grid {
     display: grid;
-    grid-template-columns: 1.4fr repeat(3, 1fr);
+    grid-template-columns: 1.5fr 1.1fr 1.1fr 1.1fr;
     gap: var(--space-7);
   }
-  @media (max-width: 800px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; }
+
+  .footer-logo { display: inline-block; text-decoration: none; margin-bottom: var(--space-4); }
+  .footer-desc { font-size: var(--fs-100); line-height: 1.65; margin-bottom: var(--space-4); }
+  .footer-contact { margin: 0; }
+  .footer-contact a {
+    color: var(--brand-ink);
+    font-weight: 700;
+    font-size: var(--fs-200);
   }
-  @media (max-width: 480px) {
-    .footer-grid { grid-template-columns: 1fr; }
-  }
-  .footer-title {
-    margin: 0 0 var(--space-3);
-    color: var(--color-blanco);
-    font-size: var(--fs-400);
-  }
-  .footer-title strong { font-weight: 700; }
-  .footer-title em { font-style: normal; color: var(--color-terracota-300); margin-left: 0.25rem; }
-  .footer-tagline {
-    color: var(--color-grafito-300);
-    margin-bottom: var(--space-4);
-  }
-  address { font-style: normal; color: var(--color-grafito-100); }
-  address a { color: var(--color-blanco); }
-  address a:hover { color: var(--color-terracota-300); }
+  .footer-contact a:hover { color: var(--brand-rust); }
 
   .footer-col h4 {
-    color: var(--color-blanco);
+    color: var(--brand-ink);
     font-size: var(--fs-100);
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.09em;
     margin-bottom: var(--space-4);
   }
   .footer-col ul { list-style: none; margin: 0; padding: 0; }
-  .footer-col li { margin-bottom: var(--space-2); }
-  .footer-col a {
-    color: var(--color-grafito-100);
+  .footer-col li { margin-bottom: var(--space-3); }
+
+  .footer-col a { color: var(--text-muted); font-size: var(--fs-100); }
+  .footer-col a:hover { color: var(--brand-rust); }
+
+  .footer-places li { display: flex; flex-direction: column; gap: 0.2rem; }
+  .footer-place-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--brand-ink);
+    font-weight: 600;
     font-size: var(--fs-100);
   }
-  .footer-col a:hover { color: var(--color-terracota-300); }
+  .footer-place-title svg { color: var(--accent); }
+  .footer-place-text { color: var(--text-muted); font-size: var(--fs-50); line-height: 1.6; }
+
+  .footer-cta-text { font-size: var(--fs-100); line-height: 1.6; margin-bottom: var(--space-4); }
+  .footer-cta-actions { display: grid; gap: var(--space-2); }
+  .footer-cta-actions .btn { font-size: var(--fs-100); }
 
   .footer-bottom {
     margin-top: var(--space-7);
     padding-top: var(--space-5);
-    border-top: 1px solid var(--color-grafito-700);
+    border-top: 1px solid var(--line);
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: var(--space-4);
     flex-wrap: wrap;
-    color: var(--color-grafito-300);
+    color: var(--text-soft);
     font-size: var(--fs-50);
   }
   .footer-bottom p { margin: 0; }
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-legal a { color: var(--text-soft); }
+  .footer-legal a:hover { color: var(--brand-rust); }
+
+  @media (max-width: 1000px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .footer-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+  }
 </style>

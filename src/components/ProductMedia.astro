@@ -1,0 +1,87 @@
+---
+/**
+ * ProductMedia.astro — imagen de un producto, con fallback al dibujo SVG.
+ *
+ * Orden de resolución:
+ *   1. product.image  (ruta explícita en src/data/products.ts)
+ *   2. convención     public/images/productos/<slug>.<jpg|webp|png|avif>
+ *   3. BrickIllustration.astro (dibujo isométrico en SVG)
+ *
+ * Cada producto resuelve SU propia foto; nunca se reusa la de otro.
+ * Se resuelve en build time, así que si la foto todavía no está, la página
+ * no rompe: dibuja el ladrillo.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Product } from '../data/products';
+import BrickIllustration from './BrickIllustration.astro';
+
+interface Props {
+  product: Product;
+  size?: 'card' | 'detail';
+  class?: string;
+}
+
+const { product, size = 'card', class: className } = Astro.props;
+
+const EXTENSIONS = ['webp', 'jpg', 'jpeg', 'png', 'avif'];
+
+function existsInPublic(url: string): boolean {
+  return fs.existsSync(path.join(process.cwd(), 'public', url.replace(/^\//, '')));
+}
+
+/** Devuelve la ruta de la foto si existe en /public, si no null */
+function resolveImage(product: Product): string | null {
+  if (product.image) {
+    return existsInPublic(product.image) ? product.image : null;
+  }
+  for (const ext of EXTENSIONS) {
+    const candidate = `/images/productos/${product.slug}.${ext}`;
+    if (existsInPublic(candidate)) return candidate;
+  }
+  return null;
+}
+
+const src = resolveImage(product);
+const alt = product.imageAlt ?? product.name;
+
+/** Proporción del fallback SVG, para no saltar el layout al cargar la foto */
+const RATIO = size === 'detail' ? 720 / 500 : 420 / 300;
+const width = 1200;
+const height = Math.round(width / RATIO);
+---
+
+{
+  src ? (
+    <img
+      class:list={['product-media-img', className]}
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={size === 'detail' ? 'eager' : 'lazy'}
+      decoding="async"
+      data-product={product.slug}
+    />
+  ) : (
+    <div class="product-media-svg" data-fallback={product.slug}>
+      <BrickIllustration product={product} size={size} />
+    </div>
+  )
+}
+
+<style>
+  .product-media-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    background: var(--surface-alt);
+  }
+  .product-media-svg {
+    line-height: 0;
+  }
+  .product-media-svg :global(.brick-wrap) {
+    border-radius: 0;
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+/**
+ * Logo.astro — logo de Cerámica Puerto Rico.
+ *
+ * Usa /logo.svg, un vector trazado a partir del archivo original
+ * "logo ceramica pto rico.jpeg" (bbox real 999×363 px, naranja #FF3E00).
+ * Las letras van trazadas como paths, así que no depende de ninguna fuente.
+ *
+ * Va como <img> y no inline a propósito: son ~64 KB de path data que el
+ * navegador descarga una vez y cachea, en vez de repetirse en cada página.
+ *
+ * ——— Para usar el vector original del diseñador ———
+ * Guardalo como public/logo-real.svg y este componente lo usa solo,
+ * sin tocar nada más. Borrá el archivo para volver al trazado.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+
+const hasRealLogo = fs.existsSync(path.join(process.cwd(), 'public', 'logo-real.svg'));
+const src = hasRealLogo ? '/logo-real.svg' : '/logo.svg';
+
+/** viewBox natural del logo: 999 × 363 */
+const NATIVE_W = 999;
+const NATIVE_H = 363;
+
+interface Props {
+  height?: number;
+  class?: string;
+  /** texto alternativo; por defecto el nombre de la marca */
+  alt?: string;
+}
+
+const { height = 40, class: className, alt = 'Cerámica Puerto Rico' } = Astro.props;
+const width = Math.round((height * NATIVE_W) / NATIVE_H);
+---
+
+<img
+  class:list={['logo', className]}
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  style={`height:${height}px;width:auto`}
+  loading="eager"
+  decoding="sync"
+/>
+
+<style>
+  .logo {
+    display: block;
+    width: auto;
+    max-width: 100%;
+  }
+</style>

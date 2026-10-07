@@ -44,10 +44,20 @@ export const company = {
     country: 'Argentina',
   },
 
-  // Teléfono principal validado
+  // Teléfono comercial — confirmado por la empresa (publicaciones oct/2026)
   phone: {
-    display: '+54 3743 476985',
-    tel: '+543743476985',
+    display: '+54 9 3743 47-3702',
+    tel: '+5493743473702',
+  },
+  whatsappSales: '5493743473702',
+
+  // Horario de atención — confirmado por la empresa (publicaciones oct/2026).
+  // Jornada partida: por la mañana y por la tarde.
+  hours: {
+    weekdays: 'Lunes a viernes',
+    morning: '7:00 a 12:00 hs',
+    afternoon: '14:00 a 18:00 hs',
+    display: 'Lunes a viernes, 7 a 12 hs y 14 a 18 hs',
   },
 
   // Sucursales / corralones
@@ -58,9 +68,9 @@ export const company = {
       address: 'Sección 1°, Colonia San Alberto, Lote 25B',
       locality: 'Puerto Rico',
       province: 'Misiones',
-      phone: '+54 3743 476985',
-      whatsapp: '5493743476985',
-      hours: 'Lunes a viernes de 7:00 a 17:00',
+      phone: '+54 9 3743 47-3702',
+      whatsapp: '5493743473702',
+      hours: 'Lunes a viernes, 7 a 12 hs y 14 a 18 hs',
     },
     {
       slug: 'corralon-puerto-iguazu',
