@@ -1,12 +1,12 @@
 /**
- * CatÃ¡logo real de CerÃ¡mica Puerto Rico.
+ * Catálogo real de Cerámica Puerto Rico.
  *
  * Fuente: "FOTOS Y VIDEOS/Fotos Ladrillos.doc" (documento de la empresa),
  * que lista 14 modelos con su nombre comercial. Los nombres siguen el
- * formato ancho Ã— alto Ã— largo, en centÃ­metros.
+ * formato ancho Ã× alto Ã× largo, en centímetros.
  *
- * Lo que NO estÃ¡ cargado todavÃ­a (SPEC Â§30 â€” no publicar sin validar):
- * peso unitario, unidades por mÂ², unidades por pallet, resistencia,
+ * Lo que NO está cargado todavía (SPEC ç30 â€” no publicar sin validar):
+ * peso unitario, unidades por mò, unidades por pallet, resistencia,
  * ensayo y norma. Esos campos quedan en `null` y la interfaz los muestra
  * como "A confirmar".
  *
@@ -39,12 +39,12 @@ export interface Product {
   slug: string;
   /** nombre comercial exacto, como figura en el documento de la empresa */
   name: string;
-  /** familia comercial: portante, visto, liviano, comÃºn, etc. */
+  /** familia comercial: portante, visto, liviano, común, etc. */
   type: ProductType;
   application: Application[];
   pending?: boolean;
   description: string;
-  /** ancho Ã— alto Ã— largo en cm */
+  /** ancho Ã× alto Ã× largo en cm */
   dimensions?: string | null;
   /** ancho nominal en cm, para filtros y ordenamiento */
   widthCm?: number | null;
@@ -57,7 +57,7 @@ export interface Product {
   recommendedUse?: string;
   featured?: boolean;
   pdfUrl?: string | null;
-  /** ruta explÃ­cita de la foto; si falta, se busca por convenciÃ³n <slug>.<ext> */
+  /** ruta explícita de la foto; si falta, se busca por convención <slug>.<ext> */
   image?: string | null;
   imageAlt?: string;
 }
@@ -70,8 +70,8 @@ export const products: Product[] = [
     application: ['muros-portantes', 'edificios', 'cerramientos'],
     pending: true,
     description:
-      'Ladrillo portante de 18 cm para muros que soportan cargas. Es la pieza de mayor resistencia del catÃ¡logo; el uso estructural requiere verificaciÃ³n del profesional a cargo.',
-    dimensions: '18 Ã— 18 Ã— 24 cm',
+      'Ladrillo portante de 18 cm para muros que soportan cargas. Es la pieza de mayor resistencia del catálogo; el uso estructural requiere verificación del profesional a cargo.',
+    dimensions: '18 Ã× 18 Ã× 24 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -91,7 +91,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo portante de 12 cm. Menos espesor que el de 18 cm y mismo comportamiento estructural, para cuando hay que reservar ancho.',
-    dimensions: '12 Ã— 18 Ã— 24 cm',
+    dimensions: '12 Ã× 18 Ã× 24 cm',
     widthCm: 12,
     weightKg: null,
     unitsPerM2: null,
@@ -109,8 +109,8 @@ export const products: Product[] = [
     application: ['cerramientos', 'edificios'],
     pending: true,
     description:
-      'Ladrillo de 18 cm de formato liviano. Se usa en cerramientos y en piezas donde se busca buen comportamiento tÃ©rmico con menos carga.',
-    dimensions: '18 Ã— 18 Ã— 24 cm',
+      'Ladrillo de 18 cm de formato liviano. Se usa en cerramientos y en piezas donde se busca buen comportamiento térmico con menos carga.',
+    dimensions: '18 Ã× 18 Ã× 24 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -130,7 +130,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo liviano de 12 cm. Formato muy usado en cerramientos de viviendas y en tabiques.',
-    dimensions: '12 Ã— 18 Ã— 24 cm',
+    dimensions: '12 Ã× 18 Ã× 24 cm',
     widthCm: 12,
     weightKg: null,
     unitsPerM2: null,
@@ -144,13 +144,13 @@ export const products: Product[] = [
   },
   {
     slug: '8x18x24-comun',
-    name: '8x18x24 ComÃºn',
+    name: '8x18x24 Común',
     type: 'comun',
     application: ['cerramientos', 'tabiques-interiores', 'viviendas'],
     pending: true,
     description:
-      'Ladrillo comÃºn de 8 cm, el mÃ¡s usado de la lÃ­nea para cerramientos. Buena combinaciÃ³n de peso, rendimiento y disponibilidad.',
-    dimensions: '8 Ã— 18 Ã— 24 cm',
+      'Ladrillo común de 8 cm, el más usado de la línea para cerramientos. Buena combinación de peso, rendimiento y disponibilidad.',
+    dimensions: '8 Ã× 18 Ã× 24 cm',
     widthCm: 8,
     weightKg: null,
     unitsPerM2: null,
@@ -169,8 +169,8 @@ export const products: Product[] = [
     application: ['cerramientos', 'viviendas'],
     pending: true,
     description:
-      'Ladrillo de 18 Ã— 18 Ã— 24 cm. Pieza de formato general dentro de la lÃ­nea.',
-    dimensions: '18 Ã— 18 Ã— 24 cm',
+      'Ladrillo de 18 Ã× 18 Ã× 24 cm. Pieza de formato general dentro de la línea.',
+    dimensions: '18 Ã× 18 Ã× 24 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -190,7 +190,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo visto de 12 cm. Se deja la cara a la vista, sin revoco ni pintura.',
-    dimensions: '12 Ã— 18 Ã— 24 cm',
+    dimensions: '12 Ã× 18 Ã× 24 cm',
     widthCm: 12,
     weightKg: null,
     unitsPerM2: null,
@@ -213,7 +213,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo visto de formato menor (13 cm de alto, 20 cm de largo). Para muros vistos donde se busca pieza chica.',
-    dimensions: '8 Ã— 13 Ã— 20 cm',
+    dimensions: '8 Ã× 13 Ã× 20 cm',
     widthCm: 8,
     weightKg: null,
     unitsPerM2: null,
@@ -233,7 +233,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo visto de 10 cm. Formato intermedio para muros vistos.',
-    dimensions: '10 Ã— 15 Ã— 24 cm',
+    dimensions: '10 Ã× 15 Ã× 24 cm',
     widthCm: 10,
     weightKg: null,
     unitsPerM2: null,
@@ -253,7 +253,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Pieza de 6 cm con formato de rejilla. Se usa en cerramientos livianos y como pieza de relleno.',
-    dimensions: '6 Ã— 12 Ã— 24 cm',
+    dimensions: '6 Ã× 12 Ã× 24 cm',
     widthCm: 6,
     weightKg: null,
     unitsPerM2: null,
@@ -272,8 +272,8 @@ export const products: Product[] = [
     application: ['cerramientos', 'tabiques-interiores'],
     pending: true,
     description:
-      'Pieza de 6 cm con dos tubos. Formato pensado para trabajos donde se busca poco peso y buena ejecuciÃ³n.',
-    dimensions: '6 Ã— 12 Ã— 24 cm',
+      'Pieza de 6 cm con dos tubos. Formato pensado para trabajos donde se busca poco peso y buena ejecución.',
+    dimensions: '6 Ã× 12 Ã× 24 cm',
     widthCm: 6,
     weightKg: null,
     unitsPerM2: null,
@@ -287,13 +287,13 @@ export const products: Product[] = [
   },
   {
     slug: '18x18x12-5-artistico',
-    name: '18x18x12.5 ArtÃ­stico',
+    name: '18x18x12.5 Artístico',
     type: 'artistico',
     application: ['cerramientos', 'viviendas'],
     pending: true,
     description:
-      'Ladrillo de 18 cm de largo reducido (12,5 cm), de terminaciÃ³n artÃ­stica. Para detalles, terminaciones y muros decorativos.',
-    dimensions: '18 Ã— 18 Ã— 12,5 cm',
+      'Ladrillo de 18 cm de largo reducido (12,5 cm), de terminación artística. Para detalles, terminaciones y muros decorativos.',
+    dimensions: '18 Ã× 18 Ã× 12,5 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -312,7 +312,7 @@ export const products: Product[] = [
     application: ['encadenados', 'muros-portantes', 'edificios'],
     pending: true,
     description:
-      'Peine de encadenado. Pieza de enlace horizontal y vertical, para vincular estructura con mamposterÃ­a y resolver los encuentros.',
+      'Peine de encadenado. Pieza de enlace horizontal y vertical, para vincular estructura con mampostería y resolver los encuentros.',
     dimensions: null,
     widthCm: null,
     weightKg: null,
@@ -332,8 +332,8 @@ export const products: Product[] = [
     application: ['losas', 'techos'],
     pending: true,
     description:
-      'Losa de 43 cm de largo. Pieza para losas y techos; su uso y cÃ¡lculo los define el profesional a cargo.',
-    dimensions: '43 Ã— 12 Ã— 20 cm',
+      'Losa de 43 cm de largo. Pieza para losas y techos; su uso y cálculo los define el profesional a cargo.',
+    dimensions: '43 Ã× 12 Ã× 20 cm',
     widthCm: 43,
     weightKg: null,
     unitsPerM2: null,
@@ -341,7 +341,7 @@ export const products: Product[] = [
     palletWeightKg: null,
     resistance: null,
     thermalConductivity: null,
-    recommendedUse: 'Losas y techos, segÃºn cÃ¡lculo.',
+    recommendedUse: 'Losas y techos, según cálculo.',
     featured: false,
     pdfUrl: null,
   },
@@ -360,7 +360,7 @@ export const productTypes: { id: ProductType; label: string }[] = [
   { id: 'visto', label: 'Vistos' },
   { id: 'rejilla', label: 'Rejilla' },
   { id: '2tubos', label: '2 Tubos' },
-  { id: 'artistico', label: 'ArtÃ­stico' },
+  { id: 'artistico', label: 'Artístico' },
   { id: 'encadenado', label: 'Encadenados' },
   { id: 'losa', label: 'Losas' },
 ];

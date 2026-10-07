@@ -2,18 +2,11 @@
 /**
  * ProductMedia.astro — imagen de un producto, con fallback al dibujo SVG.
  *
- * Orden de resolución:
- *   1. product.image  (ruta explícita en src/data/products.ts)
- *   2. convención     public/images/productos/<slug>.<jpg|webp|png|avif>
- *   3. BrickIllustration.astro (dibujo isométrico en SVG)
- *
- * Cada producto resuelve SU propia foto; nunca se reusa la de otro.
- * Se resuelve en build time, así que si la foto todavía no está, la página
- * no rompe: dibuja el ladrillo.
+ * Delega la resolucion a src/lib/productImage.ts, que la comparten este
+ * componente y la ficha de producto, para que no se duplique la logica.
  */
-import fs from 'node:fs';
-import path from 'node:path';
 import type { Product } from '../data/products';
+import { resolveProductImage, FALLBACK_RATIO } from '../lib/productImage';
 import BrickIllustration from './BrickIllustration.astro';
 
 interface Props {
@@ -24,31 +17,12 @@ interface Props {
 
 const { product, size = 'card', class: className } = Astro.props;
 
-const EXTENSIONS = ['webp', 'jpg', 'jpeg', 'png', 'avif'];
-
-function existsInPublic(url: string): boolean {
-  return fs.existsSync(path.join(process.cwd(), 'public', url.replace(/^\//, '')));
-}
-
-/** Devuelve la ruta de la foto si existe en /public, si no null */
-function resolveImage(product: Product): string | null {
-  if (product.image) {
-    return existsInPublic(product.image) ? product.image : null;
-  }
-  for (const ext of EXTENSIONS) {
-    const candidate = `/images/productos/${product.slug}.${ext}`;
-    if (existsInPublic(candidate)) return candidate;
-  }
-  return null;
-}
-
-const src = resolveImage(product);
+const src = resolveProductImage(product);
 const alt = product.imageAlt ?? product.name;
 
-/** Proporción del fallback SVG, para no saltar el layout al cargar la foto */
-const RATIO = size === 'detail' ? 720 / 500 : 420 / 300;
+const ratio = FALLBACK_RATIO[size];
 const width = 1200;
-const height = Math.round(width / RATIO);
+const height = Math.round(width / ratio);
 ---
 
 {

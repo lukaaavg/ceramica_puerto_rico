@@ -7,6 +7,7 @@ import ProductMedia from '../../components/ProductMedia.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { products } from '../../data/products';
 import { company } from '../../data/company';
+import { resolveProductImage } from '../../lib/productImage';
 
 export function getStaticPaths() {
   return products.map((product) => ({
@@ -23,6 +24,8 @@ const waText = encodeURIComponent(
 const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
 
 const hasData = (v: unknown) => v !== null && v !== undefined && v !== '';
+
+const productImage = resolveProductImage(product);
 
 const breadcrumbs = [
   { name: 'Inicio', url: '/' },
@@ -64,8 +67,8 @@ const productJsonLd = {
         <div class="product-visual">
           <ProductMedia product={product} size="detail" />
           <p class="visual-note">
-            {product.image
-              ? 'Foto del producto.'
+            {productImage
+              ? 'Imagen del modelo.'
               : 'Ilustración técnica — imagen real pendiente de sesión fotográfica.'}
           </p>
         </div>
