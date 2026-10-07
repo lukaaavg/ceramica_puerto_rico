@@ -3,7 +3,7 @@
  *
  * Fuente: "FOTOS Y VIDEOS/Fotos Ladrillos.doc" (documento de la empresa),
  * que lista 14 modelos con su nombre comercial. Los nombres siguen el
- * formato ancho Ã× alto Ã× largo, en centímetros.
+ * formato ancho × alto × largo, en centímetros.
  *
  * Lo que NO está cargado todavía (SPEC ç30 â€” no publicar sin validar):
  * peso unitario, unidades por mò, unidades por pallet, resistencia,
@@ -44,7 +44,7 @@ export interface Product {
   application: Application[];
   pending?: boolean;
   description: string;
-  /** ancho Ã× alto Ã× largo en cm */
+  /** ancho × alto × largo en cm */
   dimensions?: string | null;
   /** ancho nominal en cm, para filtros y ordenamiento */
   widthCm?: number | null;
@@ -71,7 +71,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo portante de 18 cm para muros que soportan cargas. Es la pieza de mayor resistencia del catálogo; el uso estructural requiere verificación del profesional a cargo.',
-    dimensions: '18 Ã× 18 Ã× 24 cm',
+    dimensions: '18 × 18 × 24 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -91,7 +91,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo portante de 12 cm. Menos espesor que el de 18 cm y mismo comportamiento estructural, para cuando hay que reservar ancho.',
-    dimensions: '12 Ã× 18 Ã× 24 cm',
+    dimensions: '12 × 18 × 24 cm',
     widthCm: 12,
     weightKg: null,
     unitsPerM2: null,
@@ -110,7 +110,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo de 18 cm de formato liviano. Se usa en cerramientos y en piezas donde se busca buen comportamiento térmico con menos carga.',
-    dimensions: '18 Ã× 18 Ã× 24 cm',
+    dimensions: '18 × 18 × 24 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -130,7 +130,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo liviano de 12 cm. Formato muy usado en cerramientos de viviendas y en tabiques.',
-    dimensions: '12 Ã× 18 Ã× 24 cm',
+    dimensions: '12 × 18 × 24 cm',
     widthCm: 12,
     weightKg: null,
     unitsPerM2: null,
@@ -150,7 +150,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo común de 8 cm, el más usado de la línea para cerramientos. Buena combinación de peso, rendimiento y disponibilidad.',
-    dimensions: '8 Ã× 18 Ã× 24 cm',
+    dimensions: '8 × 18 × 24 cm',
     widthCm: 8,
     weightKg: null,
     unitsPerM2: null,
@@ -169,8 +169,8 @@ export const products: Product[] = [
     application: ['cerramientos', 'viviendas'],
     pending: true,
     description:
-      'Ladrillo de 18 Ã× 18 Ã× 24 cm. Pieza de formato general dentro de la línea.',
-    dimensions: '18 Ã× 18 Ã× 24 cm',
+      'Ladrillo de 18 × 18 × 24 cm. Pieza de formato general dentro de la línea.',
+    dimensions: '18 × 18 × 24 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -190,7 +190,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo visto de 12 cm. Se deja la cara a la vista, sin revoco ni pintura.',
-    dimensions: '12 Ã× 18 Ã× 24 cm',
+    dimensions: '12 × 18 × 24 cm',
     widthCm: 12,
     weightKg: null,
     unitsPerM2: null,
@@ -213,7 +213,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo visto de formato menor (13 cm de alto, 20 cm de largo). Para muros vistos donde se busca pieza chica.',
-    dimensions: '8 Ã× 13 Ã× 20 cm',
+    dimensions: '8 × 13 × 20 cm',
     widthCm: 8,
     weightKg: null,
     unitsPerM2: null,
@@ -233,7 +233,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo visto de 10 cm. Formato intermedio para muros vistos.',
-    dimensions: '10 Ã× 15 Ã× 24 cm',
+    dimensions: '10 × 15 × 24 cm',
     widthCm: 10,
     weightKg: null,
     unitsPerM2: null,
@@ -253,7 +253,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Pieza de 6 cm con formato de rejilla. Se usa en cerramientos livianos y como pieza de relleno.',
-    dimensions: '6 Ã× 12 Ã× 24 cm',
+    dimensions: '6 × 12 × 24 cm',
     widthCm: 6,
     weightKg: null,
     unitsPerM2: null,
@@ -273,7 +273,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Pieza de 6 cm con dos tubos. Formato pensado para trabajos donde se busca poco peso y buena ejecución.',
-    dimensions: '6 Ã× 12 Ã× 24 cm',
+    dimensions: '6 × 12 × 24 cm',
     widthCm: 6,
     weightKg: null,
     unitsPerM2: null,
@@ -293,7 +293,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Ladrillo de 18 cm de largo reducido (12,5 cm), de terminación artística. Para detalles, terminaciones y muros decorativos.',
-    dimensions: '18 Ã× 18 Ã× 12,5 cm',
+    dimensions: '18 × 18 × 12,5 cm',
     widthCm: 18,
     weightKg: null,
     unitsPerM2: null,
@@ -333,7 +333,7 @@ export const products: Product[] = [
     pending: true,
     description:
       'Losa de 43 cm de largo. Pieza para losas y techos; su uso y cálculo los define el profesional a cargo.',
-    dimensions: '43 Ã× 12 Ã× 20 cm',
+    dimensions: '43 × 12 × 20 cm',
     widthCm: 43,
     weightKg: null,
     unitsPerM2: null,
