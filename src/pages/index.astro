@@ -2,7 +2,7 @@
 /**
  * Home — seguirá la referencia de Stitch:
  * hero · stats · propuesta de valor · catálogo destacado · descargas
- * calculadora · beneficios · obras · CTA exprés.
+ * calculadora · beneficios · CTA exprés.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
@@ -62,25 +62,6 @@ const benefits = [
     icon: 'engineering',
     title: 'Precio de fábrica',
     desc: 'Comprás directo a la planta, sin intermediarios. Presupuesto sin cargo y respuesta rápida.',
-  },
-];
-
-const works = [
-  {
-    tag: 'Residencia enOberá',
-    title: 'Complejo Habitacional Las Camelias',
-    meta: 'Muros portantes · 18 × 18 × 33 · Volumen total 42.000 unidades',
-    featured: true,
-  },
-  {
-    tag: 'Monteros Residentials – Oberá',
-    title: 'Ladrillos Vistos',
-    meta: 'Portada Ecuatorial 12 y 8',
-  },
-  {
-    tag: 'Toga Colonial y Francesca Pressada',
-    title: 'Vivienda unifamiliar',
-    meta: 'Cerramientos y Potillos 10 cm de alto',
   },
 ];
 
@@ -224,61 +205,6 @@ const waQuote = encodeURIComponent(
           </li>
         ))}
       </ul>
-    </div>
-  </section>
-
-  <!-- Obras -->
-  <section class="section" id="obras">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <span class="section-eyebrow">Casas en centros urbanos y la margen</span>
-          <h2>Obras construidas con nuestra cerámica</h2>
-        </div>
-        <p class="section-head-aside">Más de 1.500 viviendas y conjuntos ejecutados</p>
-      </div>
-
-      <div class="works-grid">
-        <article class="work work--featured">
-          <div class="work-media" role="img" aria-label={works[0].title}>
-            <span class="work-tag">{works[0].tag}</span>
-            <div class="work-overlay">
-              <h3>{works[0].title}</h3>
-              <p class="work-meta">{works[0].meta}</p>
-            </div>
-          </div>
-        </article>
-
-        <div class="works-side">
-          {works.slice(1).map((w) => (
-            <article class="work work--sm">
-              <div class="work-media" role="img" aria-label={w.title}>
-                <span class="work-tag">{w.tag}</span>
-                <div class="work-overlay">
-                  <h3>{w.title}</h3>
-                  <p class="work-meta">{w.meta}</p>
-                </div>
-              </div>
-            </article>
-          ))}
-
-          <aside class="card mayorista">
-            <span class="mayorista-badge">Te registramos</span>
-            <h3>¿Sos empresa constructora o corralón?</h3>
-            <p>
-              Contactanos para precio de fábrica, condiciones de pago diferidas
-              y entrega preparada para compras recurrentes.
-            </p>
-            <a href="/contacto" class="mayorista-link">
-              Abrir Cuenta Mayorista
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                   stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </a>
-          </aside>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -558,94 +484,6 @@ const waQuote = encodeURIComponent(
   .benefit-card { display: flex; flex-direction: column; gap: var(--space-3); }
   .benefit-card h3 { font-size: var(--fs-200); margin: 0; line-height: 1.35; }
   .benefit-card p { margin: 0; font-size: var(--fs-100); color: var(--text-muted); }
-
-  /* — Obras — */
-  .works-grid {
-    display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: var(--space-5);
-    align-items: stretch;
-  }
-  .works-side {
-    display: grid;
-    grid-template-rows: repeat(2, 1fr) auto;
-    gap: var(--space-5);
-  }
-  .work { display: flex; }
-  .work-media {
-    position: relative;
-    width: 100%;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background:
-      radial-gradient(ellipse at 70% 20%, rgba(232, 115, 74, 0.45), transparent 60%),
-      linear-gradient(150deg, #cfc0b1 0%, #9c7c62 50%, #4e382a 100%);
-    display: flex;
-    align-items: flex-end;
-    box-shadow: var(--shadow-md);
-  }
-  .work--featured .work-media { min-height: 380px; }
-  .work--sm .work-media { min-height: 150px; }
-
-  .work-tag {
-    position: absolute;
-    top: var(--space-3);
-    left: var(--space-3);
-    z-index: 2;
-    background: var(--brand-rust);
-    color: #fff;
-    font-size: var(--fs-50);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.25rem 0.6rem;
-    border-radius: var(--radius-sm);
-  }
-  .work-overlay {
-    position: relative;
-    width: 100%;
-    padding: var(--space-4) var(--space-5);
-    background: linear-gradient(0deg, rgba(23, 18, 15, 0.9) 0%, rgba(23, 18, 15, 0.45) 65%, transparent 100%);
-    color: #fff;
-  }
-  .work-overlay h3 {
-    color: #fff;
-    margin: 0 0 0.2rem;
-    font-size: var(--fs-400);
-    letter-spacing: -0.015em;
-  }
-  .work--sm .work-overlay h3 { font-size: var(--fs-200); }
-  .work-meta {
-    margin: 0;
-    font-size: var(--fs-50);
-    color: rgba(255, 255, 255, 0.82);
-    line-height: 1.5;
-  }
-
-  .mayorista { display: flex; flex-direction: column; gap: var(--space-2); }
-  .mayorista-badge {
-    align-self: flex-start;
-    font-size: var(--fs-50);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-  }
-  .mayorista h3 { font-size: var(--fs-300); margin: 0; }
-  .mayorista p { margin: 0; font-size: var(--fs-100); color: var(--text-muted); }
-  .mayorista-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: var(--fs-100);
-    font-weight: 600;
-    color: var(--brand-rust);
-  }
-  .mayorista-link:hover { color: var(--brand-deep); }
-
-  @media (max-width: 860px) {
-    .works-grid { grid-template-columns: 1fr; }
-  }
 
   /* — CTA exprés — */
   .cta-block {
