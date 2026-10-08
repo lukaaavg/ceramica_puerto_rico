@@ -1,165 +1,201 @@
 ---
 /**
- * Hero.astro — bloque principal del Home.
- * SPEC §22: H1 + bajada + 2 CTA + badge "Desde 1975".
- * Imagen real cuando se entregue (acá se usa un placeholder visual).
+ * Hero.astro — bloque principal según la referencia Stitch:
+ * columna de texto (eyebrow, H1, bajada, 2 CTA, chips de confianza)
+ * + tarjeta de imagen con badge naranja superpuesto.
+ * SPEC §22.
  */
-import { company } from '../data/company';
 
 interface Props {
+  eyebrow?: string;
   title?: string;
   subtitle?: string;
-  badge?: string;
   primaryCta?: { href: string; label: string };
   secondaryCta?: { href: string; label: string };
 }
 
 const {
-  title = 'Ladrillos cerámicos hechos en Misiones para construir nuestra región',
-  subtitle = 'Industria, experiencia y soluciones cerámicas para viviendas, obras y desarrollos del NEA.',
-  badge = 'Desde 1975',
-  primaryCta = { href: '/productos', label: 'Ver productos' },
-  secondaryCta = { href: '/contacto', label: 'Solicitar presupuesto' },
+  eyebrow = 'Solidez estructural y aislación térmica',
+  title = 'Vos construís, nosotros lo llevamos.',
+  subtitle = 'Ladrillos cerámicos huecos y portantes producidos en nuestra fábrica de Puerto Rico, Misiones. Stock constante, logística propia y el precio de fábrica.',
+  primaryCta = { href: '/productos', label: 'Explorar Catálogo' },
+  secondaryCta = { href: '/contacto', label: 'Pedir Presupuesto' },
 } = Astro.props;
+
+const trustPoints = [
+  'Presupuesto sin cargo',
+  'Stock constante',
+  'Acompañamos tu obra',
+];
 ---
 
 <section class="hero">
-  <div class="hero-bg" aria-hidden="true">
-    <div class="hero-pattern"></div>
-    <svg class="hero-svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id="hero-brick" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stop-color="#d9986c" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#7c3b21" stop-opacity="0.55"/>
-        </linearGradient>
-        <pattern id="bricks-pattern" x="0" y="0" width="80" height="36" patternUnits="userSpaceOnUse">
-          <rect width="80" height="36" fill="none"/>
-          <rect x="2" y="2" width="34" height="14" rx="2" fill="url(#hero-brick)"/>
-          <rect x="42" y="2" width="34" height="14" rx="2" fill="url(#hero-brick)"/>
-          <rect x="22" y="20" width="34" height="14" rx="2" fill="url(#hero-brick)"/>
-        </pattern>
-      </defs>
-      <rect x="700" y="0" width="500" height="600" fill="url(#bricks-pattern)" opacity="0.6"/>
-      <circle cx="980" cy="120" r="180" fill="#d9986c" opacity="0.15"/>
-      <circle cx="1080" cy="450" r="120" fill="#7c3b21" opacity="0.10"/>
-    </svg>
-  </div>
-
   <div class="container hero-inner">
-    <span class="hero-badge">
-      <span class="hero-badge-dot" aria-hidden="true"></span>
-      {badge}
-    </span>
-    <h1>{title}</h1>
-    <p class="hero-sub">{subtitle}</p>
-    <div class="hero-actions">
-      <a href={primaryCta.href} class="btn btn-primary">{primaryCta.label}</a>
-      <a href={secondaryCta.href} class="btn btn-secondary">{secondaryCta.label}</a>
+    <div class="hero-text">
+      <span class="section-eyebrow">{eyebrow}</span>
+      <h1>{title}</h1>
+      <p class="hero-sub">{subtitle}</p>
+
+      <div class="hero-actions">
+        <a href={primaryCta.href} class="btn btn-primary btn-lg">{primaryCta.label}</a>
+        <a href={secondaryCta.href} class="btn btn-secondary btn-lg">
+          {secondaryCta.label}
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
+      </div>
+
+      <ul class="hero-trust">
+        {trustPoints.map((t) => (
+          <li>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            {t}
+          </li>
+        ))}
+      </ul>
     </div>
-    <p class="hero-meta">
-      <span class="hero-meta-dot" aria-hidden="true"></span>
-      Fábrica en {company.address.locality}, {company.address.province} · Tel {company.phone.display}
-    </p>
+
+    <div class="hero-media">
+      <img
+        class="hero-photo"
+        src="/images/planta/horno-pallets-1.webp"
+        alt="Pallet de ladrillos cerámicos entrando al horno de la planta de Puerto Rico, Misiones"
+        width="1600"
+        height="1451"
+        fetchpriority="high"
+        decoding="async"
+      />
+
+      <div class="hero-badge">
+        <p class="hero-badge-title">Stock constante</p>
+        <p class="hero-badge-text">
+          Ladrillo hueco 12x18x24 en planta
+        </p>
+        <a href="/productos/12x18x24-visto" class="hero-badge-link">
+          Ver ese producto
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    overflow: hidden;
-    background:
-      linear-gradient(135deg, var(--color-blanco-calido) 0%, var(--color-terracota-50) 100%);
-    padding-block: var(--space-9) var(--space-10);
-  }
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    opacity: 0.7;
-  }
-  .hero-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .hero-pattern {
-    position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(45deg,
-        transparent 0 24px,
-        rgba(184, 98, 59, 0.05) 24px 25px);
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding-block: var(--space-8);
   }
   .hero-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-  }
-  .hero-badge {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--space-8);
     align-items: center;
-    gap: var(--space-2);
-    background: var(--color-grafito-900);
-    color: var(--color-blanco);
-    padding: 0.5rem 1rem;
-    border-radius: 999px;
-    font-size: var(--fs-50);
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: var(--space-5);
-    box-shadow: 0 4px 12px rgba(15, 15, 18, 0.15);
   }
-  .hero-badge-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-terracota-500);
-    box-shadow: 0 0 0 3px rgba(184, 98, 59, 0.25);
-  }
+
   h1 {
-    font-size: clamp(2.5rem, 5vw, 4.25rem);
+    font-size: clamp(2.125rem, 4vw, 3.25rem);
     margin-bottom: var(--space-4);
-    letter-spacing: -0.02em;
   }
   .hero-sub {
-    font-size: var(--fs-400);
-    color: var(--color-grafito-500);
-    max-width: 60ch;
+    color: var(--text-muted);
+    font-size: var(--fs-300);
+    line-height: 1.6;
+    max-width: 54ch;
     margin-bottom: var(--space-6);
   }
+
   .hero-actions {
     display: flex;
     gap: var(--space-3);
     flex-wrap: wrap;
     margin-bottom: var(--space-6);
   }
-  .hero-actions .btn {
-    flex: 1 1 auto;
-    min-width: 180px;
-    justify-content: center;
+
+  .hero-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
-  @media (min-width: 540px) {
-    .hero-actions .btn { flex: 0 1 auto; min-width: 0; }
-  }
-  .hero-meta {
+  .hero-trust li {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: 0.4rem;
     font-size: var(--fs-100);
-    color: var(--color-grafito-500);
-    margin: 0;
-    padding: var(--space-3) var(--space-4);
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(8px);
-    border-radius: 999px;
-    border: 1px solid var(--color-grafito-100);
+    color: var(--text-muted);
   }
-  .hero-meta-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-terracota-500);
+  .hero-trust svg { color: var(--accent); flex-shrink: 0; }
+
+  /* — Media — */
+  .hero-media {
+    position: relative;
+    padding-bottom: var(--space-6);
+    aspect-ratio: 4 / 3;
+  }
+  .hero-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero-badge {
+    position: absolute;
+    left: calc(var(--space-5) * -1);
+    bottom: 0;
+    max-width: 300px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: 0 10px 26px rgba(176, 58, 22, 0.32);
+  }
+  .hero-badge-title {
+    margin: 0 0 0.2rem;
+    font-size: var(--fs-300);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .hero-badge-text {
+    margin: 0 0 var(--space-3);
+    font-size: var(--fs-50);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .hero-badge-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #fff;
+    font-size: var(--fs-100);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+    padding-bottom: 1px;
+  }
+  .hero-badge-link:hover { color: #fff; border-bottom-color: #fff; }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: var(--space-6); }
+    .hero-media { padding-bottom: 0; }
+    .hero-badge {
+      position: static;
+      max-width: none;
+      margin-top: calc(var(--space-4) * -1);
+      margin-left: var(--space-4);
+    }
   }
 </style>

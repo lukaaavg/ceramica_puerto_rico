@@ -5,7 +5,7 @@ REM  Doble clic o ejecutar desde cmd para arrancar Astro dev.
 REM  Para detener: Ctrl+C en esta ventana.
 REM ============================================================
 
-cd /d "D:\DOCUMENTOS\Documents\ceramica pto rico"
+cd /d "%~dp0"
 
 echo.
 echo  Iniciando Astro dev server...

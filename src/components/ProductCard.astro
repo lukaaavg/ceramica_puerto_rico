@@ -1,10 +1,13 @@
 ---
 /**
- * ProductCard.astro — tarjeta de producto para grid.
- * SPEC §15: imagen + título + resumen + medidas + rendimiento + CTA.
+ * ProductCard.astro — tarjeta de producto según la grilla de la referencia:
+ * imagen con tags superpuestos, fila de metadatos, título, resumen,
+ * caja de specs 2×2 y CTA "Cotizar Ahora" + botón de contacto.
+ * SPEC §15.
  */
 import type { Product } from '../data/products';
-import BrickIllustration from './BrickIllustration.astro';
+import ProductMedia from './ProductMedia.astro';
+import { company } from '../data/company';
 
 interface Props {
   product: Product;
@@ -12,94 +15,228 @@ interface Props {
 
 const { product } = Astro.props;
 
-const hasPendingData =
-  product.weightKg === null ||
-  product.unitsPerM2 === null ||
-  product.palletUnits === null;
+const typeLabels: Record<string, string> = {
+  portante: 'Material: Portante',
+  comun: 'Material: Común',
+  liviano: 'Material: Liviano',
+  visto: 'Material: Visto',
+  rejilla: 'Material: Rejilla',
+  '2tubos': 'Material: 2 Tubos',
+  artistico: 'Material: Artístico',
+  encadenado: 'Material: Encadenado',
+  losa: 'Material: Losa',
+};
+
+/** Espesor de muro legible a partir de la primera medida del producto */
+const wallThickness = product.dimensions
+  ? `${product.dimensions.split('×')[0].trim()} cm`
+  : null;
+
+const specs = [
+  { label: 'Dimensiones', value: product.dimensions ?? 'A confirmar' },
+  {
+    label: 'Rendimiento',
+    value: product.unitsPerM2 ? `${product.unitsPerM2} un/m²` : 'A confirmar',
+  },
+  { label: 'Peso', value: product.weightKg ? `${product.weightKg} kg` : 'A confirmar' },
+  {
+    label: 'Palet',
+    value: product.palletUnits ? `${product.palletUnits} unidades` : 'A confirmar',
+  },
+];
+
+const waText = `Hola, quiero cotizar ${product.name}${product.dimensions ? ` (${product.dimensions})` : ''}.`;
 ---
 
-<article class="card product-card">
-  {product.pending && (
-    <span class="pending" title="Datos técnicos pendientes de validación">Pendiente de validación</span>
-  )}
-
-  <div class="product-image">
-    <BrickIllustration product={product} size="card" />
-  </div>
-
-  <h3>{product.name}</h3>
-  <p class="product-desc">{product.description}</p>
-
-  <dl class="product-specs">
-    {product.dimensions && (
-      <div>
-        <dt>Medida</dt>
-        <dd>{product.dimensions}</dd>
-      </div>
-    )}
-    <div>
-      <dt>Rendimiento</dt>
-      <dd>{hasPendingData ? 'A confirmar' : `${product.unitsPerM2} un/m²`}</dd>
-    </div>
-    <div>
-      <dt>Aplicación</dt>
-      <dd>{product.application.join(', ')}</dd>
-    </div>
-  </dl>
-
-  <a href={`/productos/${product.slug}`} class="btn btn-secondary product-cta">
-    Ver ficha técnica
+<article class="product-card">
+  <a class="product-media" href={`/productos/${product.slug}`} tabindex="-1" aria-hidden="true">
+    <span class="tag tag--solid">{typeLabels[product.type] ?? 'Material'}</span>
+    {product.resistance && <span class="tag tag--soft">{product.resistance}</span>}
+    <ProductMedia product={product} size="card" />
   </a>
+
+  <div class="product-body">
+    <div class="product-meta">
+      {wallThickness ? <span>{wallThickness}</span> : <span></span>}
+      <span class="product-meta-label">Rendimiento</span>
+    </div>
+
+    <h3 class="product-title">
+      <a href={`/productos/${product.slug}`}>{product.name}</a>
+    </h3>
+
+    <p class="product-desc">{product.description}</p>
+
+    <dl class="product-specs">
+      {specs.map((s) => (
+        <div class="product-spec">
+          <dt>{s.label}</dt>
+          <dd>{s.value}</dd>
+        </div>
+      ))}
+    </dl>
+
+    {product.pending && <span class="pending">Pendiente de validación</span>}
+
+    <div class="product-actions">
+      <a
+        href={`https://wa.me/${company.branches[0].whatsapp}?text=${encodeURIComponent(waText)}`}
+        target="_blank"
+        rel="noopener"
+        class="btn btn-rust product-cta"
+      >
+        Cotizar Ahora
+      </a>
+      <a
+        href={`tel:${company.phone.tel}`}
+        class="product-call"
+        aria-label={`Llamar al ${company.phone.display}`}
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+      </a>
+    </div>
+  </div>
 </article>
 
 <style>
   .product-card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    height: 100%;
-  }
-  .product-card h3 { margin: 0; }
-  .product-desc {
-    color: var(--color-grafito-500);
-    font-size: var(--fs-100);
-    flex-grow: 1;
-  }
-  .product-image {
-    background: var(--color-arena);
-    border-radius: var(--radius-md);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    aspect-ratio: 200/140;
-    display: grid;
-    place-items: center;
-    margin-bottom: var(--space-2);
+    height: 100%;
+    transition: box-shadow var(--t-base), border-color var(--t-base);
   }
-  .product-specs {
-    display: grid;
-    gap: var(--space-2);
-    margin: var(--space-3) 0;
-    padding: var(--space-3) 0;
-    border-top: 1px solid var(--color-grafito-100);
-    border-bottom: 1px solid var(--color-grafito-100);
-    font-size: var(--fs-100);
+  .product-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--line-strong);
   }
-  .product-specs > div {
+
+  /* — Media con tags superpuestos — */
+  .product-media {
+    position: relative;
+    display: block;
+    background: var(--surface-alt);
+  }
+  .tag {
+    position: absolute;
+    top: var(--space-3);
+    z-index: 2;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-50);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+  }
+  .tag--solid {
+    left: var(--space-3);
+    background: var(--brand-rust);
+    color: #fff;
+  }
+  .tag--soft {
+    right: var(--space-3);
+    background: var(--surface);
+    color: var(--brand-ink);
+    border: 1px solid var(--line-strong);
+  }
+  .product-media :global(.product-media-img),
+  .product-media :global(.brick-wrap) {
+    border-radius: 0;
+  }
+
+  /* — Cuerpo — */
+  .product-body {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    flex: 1;
+  }
+
+  .product-meta {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
+    font-size: var(--fs-50);
+    color: var(--text-soft);
   }
-  .product-specs dt {
-    color: var(--color-grafito-500);
-    font-weight: 500;
-  }
-  .product-specs dd {
-    margin: 0;
-    color: var(--color-grafito-900);
+  .product-meta-label {
+    color: var(--text-muted);
     font-weight: 600;
-    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
-  .product-cta {
-    width: 100%;
+
+  .product-title {
+    font-size: var(--fs-400);
+    line-height: 1.25;
+    margin: 0;
+  }
+  .product-title a { color: var(--brand-ink); }
+  .product-title a:hover { color: var(--brand-rust); }
+
+  .product-desc {
+    color: var(--text-muted);
+    font-size: var(--fs-100);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* — Caja de specs 2×2 — */
+  .product-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3) var(--space-4);
+    margin: var(--space-2) 0 0;
+    padding: var(--space-3);
+    background: var(--surface-alt);
+    border-radius: var(--radius-md);
+  }
+  .product-spec { display: flex; flex-direction: column; gap: 0.1rem; }
+  .product-spec dt {
+    font-size: var(--fs-50);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-soft);
+  }
+  .product-spec dd {
+    margin: 0;
+    font-size: var(--fs-100);
+    font-weight: 600;
+    color: var(--brand-ink);
+  }
+
+  /* — Acciones — */
+  .product-actions {
+    display: flex;
+    gap: var(--space-2);
     margin-top: auto;
+    padding-top: var(--space-3);
+  }
+  .product-cta { flex: 1; }
+  .product-call {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    flex-shrink: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    color: var(--brand-rust);
+    background: var(--surface);
+    transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  }
+  .product-call:hover {
+    background: var(--brand-rust);
+    border-color: var(--brand-rust);
+    color: #fff;
   }
 </style>

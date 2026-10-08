@@ -27,3 +27,18 @@ pnpm-debug.log*
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Material de trabajo: las fotos y videos originales se quedan en local.
+# GitHub rechaza archivos de más de 100 MB y el repo se llenaría de binarios.
+# Lo que sí va al repo es public/images/, que ya está optimizado a WebP.
+FOTOS Y VIDEOS/
+PUBLICACIONES/
+referencias/
+*.MOV
+*.mp4
+
+# El logo original que usamos para trazar public/logo.svg
+/logo ceramica pto rico.jpeg
+
+# Log del formulario de contacto (puede contener datos de clientes)
+public/api/logs/

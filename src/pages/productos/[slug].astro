@@ -3,10 +3,11 @@
  * Ficha de producto dinámica.
  * SPEC §5: información técnica completa + CTA.
  */
-import BrickIllustration from '../../components/BrickIllustration.astro';
+import ProductMedia from '../../components/ProductMedia.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { products } from '../../data/products';
 import { company } from '../../data/company';
+import { resolveProductImage } from '../../lib/productImage';
 
 export function getStaticPaths() {
   return products.map((product) => ({
@@ -23,6 +24,8 @@ const waText = encodeURIComponent(
 const waHref = `https://wa.me/${company.branches[0].whatsapp}?text=${waText}`;
 
 const hasData = (v: unknown) => v !== null && v !== undefined && v !== '';
+
+const productImage = resolveProductImage(product);
 
 const breadcrumbs = [
   { name: 'Inicio', url: '/' },
@@ -62,8 +65,12 @@ const productJsonLd = {
 
       <div class="product-grid">
         <div class="product-visual">
-          <BrickIllustration product={product} size="detail" />
-          <p class="visual-note">Ilustración técnica — imagen real pendiente de sesión fotográfica.</p>
+          <ProductMedia product={product} size="detail" />
+          <p class="visual-note">
+            {productImage
+              ? 'Imagen del modelo.'
+              : 'Ilustración técnica — imagen real pendiente de sesión fotográfica.'}
+          </p>
         </div>
 
         <div class="product-info">

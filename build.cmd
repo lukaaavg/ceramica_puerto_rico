@@ -3,7 +3,7 @@ REM ============================================================
 REM  Build de producción — genera dist/ listo para subir por FTPS
 REM ============================================================
 
-cd /d "D:\DOCUMENTOS\Documents\ceramica pto rico"
+cd /d "%~dp0"
 
 echo.
 echo  Compilando sitio estatico...
